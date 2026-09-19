@@ -27,16 +27,22 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
 
-val catalogAsset = tasks.register<Copy>("copyClinicalCatalog") {
-    from(rootProject.file("# Comprehensive Medical Scoring Systems"))
+val catalogAsset = tasks.register<Copy>("copyClinicalSources") {
     into(layout.projectDirectory.dir("src/main/assets"))
-    rename { "catalog.md" }
+    from(rootProject.file("# Comprehensive Medical Scoring Systems")) {
+        rename { "catalog.md" }
+    }
+    from(rootProject.file("README.md")) {
+        rename { "master_prompt.md" }
+    }
 }
 tasks.named("preBuild").configure { dependsOn(catalogAsset) }
