@@ -3,54 +3,18 @@ package com.clinicalc.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Calculate
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.StarBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -58,140 +22,44 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
 
 private val Ink = Color(0xFF172321)
-private val Muted = Color(0xFF6D7D79)
-private val Paper = Color(0xFFF1F6F3)
+private val Muted = Color(0xFF61736F)
+private val Paper = Color(0xFFF4F8F5)
 private val Teal = Color(0xFF23796E)
 private val Mint = Color(0xFFD6EEE3)
-private val Peach = Color(0xFFF5D6C6)
-
-data class CatalogTool(val name: String, val category: String, val summary: String, val formula: String?, val calculable: Boolean)
+private val Amber = Color(0xFFFFE3A3)
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent { ClinicalcApp() }
-    }
+    override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); setContent { ClinicalcApp() } }
 }
 
-@Composable
-fun ClinicalcApp() {
-    val context = LocalContext.current
-    val catalog = remember(context) { loadCatalog(context) }
-    var screen by remember { mutableStateOf("home") }
-    var selected by remember { mutableStateOf<CatalogTool?>(null) }
-    var query by remember { mutableStateOf("") }
-    MaterialTheme(colorScheme = androidx.compose.material3.lightColorScheme(primary = Teal, background = Paper)) {
-        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFFE8F3EE), Paper, Color(0xFFF7E9DF))))) {
-            Scaffold(containerColor = Color.Transparent, bottomBar = { BottomBar(screen) { screen = it; selected = null } }) { padding ->
-                AnimatedContent(selected, modifier = Modifier.padding(padding), label = "screen") { tool ->
-                    if (tool != null) ToolDetail(tool) { selected = null }
-                    else when (screen) {
-                        "browse" -> BrowseScreen(catalog, query, { query = it }) { selected = it }
-                        "saved" -> EmptyScreen("Saved tools", "Star a calculator to keep it close.")
-                        "profile" -> EmptyScreen("Profile & settings", "Solid mode, privacy, sources, and app preferences.")
-                        else -> HomeScreen(catalog) { selected = it }
-                    }
-                }
+@Composable fun ClinicalcApp() {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val tools = remember { RegistryLoader.load(context) }
+    var page by remember { mutableStateOf("home") }
+    var selected by remember { mutableStateOf<RegistryTool?>(null) }
+    MaterialTheme(colorScheme = lightColorScheme(primary = Teal, background = Paper)) {
+        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFFE9F4EF), Paper, Color(0xFFFFF0E8))))) {
+            Scaffold(containerColor = Color.Transparent, bottomBar = { NavBar(page) { page = it; selected = null } }) { pad ->
+                if (selected != null) ToolScreen(selected!!, { selected = null })
+                else when (page) { "browse" -> Browse(tools) { selected = it }; "converter" -> Converter(); "profile" -> Profile(); else -> Home(tools) { selected = it } }
             }
         }
     }
 }
 
-@Composable
-private fun BottomBar(screen: String, onNavigate: (String) -> Unit) {
-    Surface(Modifier.padding(16.dp).navigationBarsPadding().shadow(18.dp, RoundedCornerShape(28.dp)), shape = RoundedCornerShape(28.dp), color = Color.White.copy(.78f)) {
-        Row(Modifier.fillMaxWidth().padding(7.dp), horizontalArrangement = Arrangement.SpaceAround) {
-            NavItem("home", screen, Icons.Rounded.Home, "Home", onNavigate)
-            NavItem("browse", screen, Icons.Rounded.Search, "Browse", onNavigate)
-            NavItem("saved", screen, Icons.Rounded.Favorite, "Saved", onNavigate)
-            NavItem("profile", screen, Icons.Rounded.Settings, "Profile", onNavigate)
-        }
-    }
-}
+@Composable private fun NavBar(page: String, navigate: (String) -> Unit) { Surface(Modifier.padding(14.dp).navigationBarsPadding(), RoundedCornerShape(30.dp), Color.White.copy(.86f), shadowElevation = 10.dp) { Row(Modifier.fillMaxWidth().padding(8.dp), Arrangement.SpaceAround) { listOf("home" to Icons.Rounded.Home, "browse" to Icons.Rounded.Search, "converter" to Icons.Rounded.Calculate, "profile" to Icons.Rounded.Settings).forEach { (id, icon) -> Column(Modifier.clickable { navigate(id) }.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) { Icon(icon, id, tint = if (id == page) Teal else Muted); Text(id.replaceFirstChar { it.uppercase() }, fontSize = 11.sp, color = if (id == page) Teal else Muted) } } } } }
 
-@Composable
-private fun NavItem(id: String, current: String, icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, onNavigate: (String) -> Unit) {
-    Column(Modifier.clickable { onNavigate(id) }.padding(horizontal = 15.dp, vertical = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(icon, label, tint = if (current == id) Teal else Muted, modifier = Modifier.size(22.dp))
-        Text(label, color = if (current == id) Teal else Muted, fontSize = 11.sp, fontWeight = if (current == id) FontWeight.Bold else FontWeight.Normal)
-    }
-}
+@Composable private fun Home(tools: List<RegistryTool>, open: (RegistryTool) -> Unit) { LazyColumn(PaddingValues(22.dp, 26.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(15.dp)) { item { Text("CLINICAL DECISION SUPPORT", color = Teal, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp) }; item { Text("Clarity when the clinical moment is moving fast.", color = Ink, fontSize = 35.sp, lineHeight = 40.sp, fontWeight = FontWeight.Bold) }; item { Text("Offline calculators, traceable sources, and calm clinical tools.", color = Muted, fontSize = 16.sp) }; item { Panel(Mint) { Text("Quick calculations", color = Teal, fontWeight = FontWeight.Bold); Text("Anion gap · MAP · QTc · MELD · conversions", color = Ink) } }; item { Text("Browse the registry", color = Ink, fontSize = 22.sp, fontWeight = FontWeight.Bold) }; items(tools.take(12)) { ToolRow(it, open) } } }
 
-@Composable
-private fun HomeScreen(catalog: List<CatalogTool>, onOpen: (CatalogTool) -> Unit) {
-    LazyColumn(contentPadding = PaddingValues(22.dp, 26.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { Text("CLINICAL DECISION SUPPORT", color = Teal, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp) }
-        item { Text("Clarity when the clinical moment is moving fast.", color = Ink, fontSize = 36.sp, lineHeight = 40.sp, fontWeight = FontWeight.Bold) }
-        item { Text("A calm, traceable home for bedside scores, risk tools, and essential calculations.", color = Muted, fontSize = 16.sp, lineHeight = 24.sp) }
-        item { GlassCard(Mint) { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Rounded.Calculate, null, tint = Teal); Spacer(Modifier.width(12.dp)); Column { Text("Quick calculator", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("${catalog.size}+ indexed tools from your source catalog", color = Muted, fontSize = 13.sp) } } } }
-        item { Text("Bedside essentials", color = Ink, fontSize = 22.sp, fontWeight = FontWeight.Bold) }
-        items(catalog.filter { it.calculable }.take(8)) { ToolCard(it) { onOpen(it) } }
-    }
-}
+@Composable private fun Browse(tools: List<RegistryTool>, open: (RegistryTool) -> Unit) { var q by remember { mutableStateOf("") }; val filtered = tools.filter { it.name.contains(q, true) || it.category.contains(q, true) }; LazyColumn(PaddingValues(22.dp, 26.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) { item { Text("THE REGISTRY", color = Teal, fontWeight = FontWeight.Bold); Text("Find your score.", color = Ink, fontSize = 38.sp, fontWeight = FontWeight.Bold); OutlinedTextField(q, { q = it }, Modifier.fillMaxWidth(), placeholder = { Text("Search ${tools.size} tools") }, leadingIcon = { Icon(Icons.Rounded.Search, null) }, singleLine = true); Text("${filtered.size} tools indexed", color = Muted, fontSize = 12.sp) }; items(filtered) { ToolRow(it, open) } } }
 
-@Composable
-private fun BrowseScreen(catalog: List<CatalogTool>, query: String, onQuery: (String) -> Unit, onOpen: (CatalogTool) -> Unit) {
-    val filtered = catalog.filter { it.name.contains(query, true) || it.category.contains(query, true) }
-    LazyColumn(contentPadding = PaddingValues(22.dp, 26.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        item { Text("THE CATALOG", color = Teal, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp) }
-        item { Text("Find your score.", color = Ink, fontSize = 40.sp, fontWeight = FontWeight.Bold) }
-        item { OutlinedTextField(query, onQuery, Modifier.fillMaxWidth(), placeholder = { Text("Search ${catalog.size}+ tools") }, leadingIcon = { Icon(Icons.Rounded.Search, null) }, singleLine = true, shape = RoundedCornerShape(16.dp)) }
-        item { Text("${filtered.size} tools indexed · reference cards are clearly marked", color = Muted, fontSize = 12.sp) }
-        items(filtered) { ToolCard(it) { onOpen(it) } }
-    }
-}
+@Composable private fun ToolRow(tool: RegistryTool, open: (RegistryTool) -> Unit) { Surface(Modifier.fillMaxWidth().clickable { open(tool) }, RoundedCornerShape(20.dp), Color.White.copy(.9f), shadowElevation = 2.dp) { Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) { Surface(Modifier.size(42.dp), RoundedCornerShape(14.dp), if (tool.status == "ready") Mint else Amber) { Box(contentAlignment = Alignment.Center) { Text(if (tool.status == "ready") "✓" else "!", color = Teal, fontWeight = FontWeight.Bold) } }; Spacer(Modifier.width(13.dp)); Column { Text(tool.name, color = Ink, fontWeight = FontWeight.Bold); Text(tool.category, color = Muted, fontSize = 12.sp); Text(if (tool.status == "ready") "Calculator or reference card" else "Verify against source", color = Muted, fontSize = 12.sp) } } } }
 
-@Composable
-private fun ToolCard(tool: CatalogTool, onOpen: () -> Unit) {
-    Card(Modifier.fillMaxWidth().clickable(onClick = onOpen), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color.White.copy(.86f)), elevation = CardDefaults.cardElevation(1.dp)) {
-        Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-            Surface(Modifier.size(42.dp), shape = RoundedCornerShape(13.dp), color = if (tool.calculable) Mint else Peach) { Box(contentAlignment = Alignment.Center) { Text(if (tool.calculable) "✓" else "i", color = Teal, fontWeight = FontWeight.Bold, fontSize = 18.sp) } }
-            Spacer(Modifier.width(14.dp)); Column(Modifier.weight(1f)) { Text(tool.name, color = Ink, fontWeight = FontWeight.Bold, fontSize = 16.sp); Text(tool.summary, color = Muted, fontSize = 12.sp, maxLines = 2); Text(if (tool.calculable) "Calculator ready" else "Reference only · coefficient review needed", color = if (tool.calculable) Teal else Color(0xFF9B693C), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 6.dp)) }
-        }
-    }
-}
+@Composable private fun ToolScreen(tool: RegistryTool, back: () -> Unit) { var a by remember { mutableStateOf("") }; var b by remember { mutableStateOf("") }; var c by remember { mutableStateOf("") }; val result = when (tool.name.lowercase()) { "anion gap" -> if (a.isNotBlank() && b.isNotBlank() && c.isNotBlank()) runCatching { ClinicalEngine.anionGap(a.toDouble(), b.toDouble(), c.toDouble()).value }.getOrNull() else null; "map" -> if (a.isNotBlank() && b.isNotBlank()) runCatching { ClinicalEngine.map(a.toDouble(), b.toDouble()).value }.getOrNull() else null; "corrected calcium" -> if (a.isNotBlank() && b.isNotBlank()) runCatching { ClinicalEngine.correctedCalcium(a.toDouble(), b.toDouble()).value }.getOrNull() else null; "serum osmolality" -> if (a.isNotBlank() && b.isNotBlank() && c.isNotBlank()) runCatching { ClinicalEngine.osmolality(a.toDouble(), b.toDouble(), c.toDouble()).value }.getOrNull() else null; else -> null }; LazyColumn(PaddingValues(22.dp, 20.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) { item { IconButton(back) { Icon(Icons.Rounded.ArrowBack, "Back") } }; item { Text(tool.category.uppercase(), color = Teal, fontSize = 12.sp, fontWeight = FontWeight.Bold); Text(tool.name, color = Ink, fontSize = 32.sp, fontWeight = FontWeight.Bold); Text(tool.purpose, color = Muted) }; if (tool.status != "ready") item { Panel(Amber) { Text("Verify against source", color = Color(0xFF7A5200), fontWeight = FontWeight.Bold); Text("This content remains flagged and must not be treated as independently verified.", color = Ink) } }; item { Panel(if (result != null) Mint else Color.White.copy(.92f)) { Text(result ?: "Enter values to calculate", color = Ink, fontSize = 25.sp, fontWeight = FontWeight.Bold) } }; if (tool.name.lowercase() in listOf("anion gap", "serum osmolality")) { item { NumericField("Sodium", a) { a = it } }; item { NumericField("Chloride or glucose", b) { b = it } }; item { NumericField("Bicarbonate or BUN", c) { c = it } } } else if (tool.name.lowercase() == "map" || tool.name.lowercase() == "corrected calcium") { item { NumericField("Primary value", a) { a = it } }; item { NumericField("Secondary value", b) { b = it } } }; item { Text("Sources & evidence", color = Ink, fontSize = 20.sp, fontWeight = FontWeight.Bold) }; item { Text("Formula and clinical interpretation are sourced from the bundled Master File. Verify against current guidelines and local protocols.", color = Muted, lineHeight = 21.sp) }; item { Text("Educational / decision-support tool — not a substitute for clinical judgment.", color = Muted, fontSize = 12.sp) } } }
 
-@Composable
-private fun ToolDetail(tool: CatalogTool, onBack: () -> Unit) {
-    var first by remember { mutableStateOf("") }; var second by remember { mutableStateOf("") }
-    val result = when (tool.name.lowercase()) { "anion gap" -> if (first.isNotBlank() && second.isNotBlank()) "Enter bicarbonate in the third field below" else "—"; "mean arterial pressure" -> if (first.isNotBlank() && second.isNotBlank()) "${((second.toDoubleOrNull() ?: 0.0) + ((first.toDoubleOrNull() ?: 0.0) - (second.toDoubleOrNull() ?: 0.0)) / 3).toInt()} mmHg" else "—"; else -> "Reference" }
-    LazyColumn(contentPadding = PaddingValues(22.dp, 22.dp, 22.dp, 110.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { IconButton(onBack) { Icon(Icons.Rounded.ArrowBack, "Back") } }
-        item { Text(tool.category.uppercase(), color = Teal, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.4.sp) }
-        item { Text(tool.name, color = Ink, fontSize = 34.sp, fontWeight = FontWeight.Bold) }
-        item { Text(tool.summary, color = Muted, fontSize = 15.sp) }
-        item { GlassCard(if (tool.calculable) Mint else Peach) { Column { Text(if (tool.calculable) "Calculator ready" else "Reference-only tool", color = Teal, fontWeight = FontWeight.Bold); Text(if (tool.calculable) result else "The supplied source identifies this tool, but coefficients or a complete scoring table are not verified for computation.", color = Ink, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp)) } } }
-        if (tool.calculable) item { OutlinedTextField(first, { first = it }, Modifier.fillMaxWidth(), label = { Text("Primary value") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true) }
-        if (tool.calculable) item { OutlinedTextField(second, { second = it }, Modifier.fillMaxWidth(), label = { Text("Secondary value") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true) }
-        item { Text("Formula", color = Ink, fontWeight = FontWeight.Bold, fontSize = 17.sp) }
-        item { Text(tool.formula ?: "Published scoring table or external coefficient model required.", color = Muted, fontSize = 14.sp, lineHeight = 21.sp, modifier = Modifier.background(Color.White.copy(.75f), RoundedCornerShape(15.dp)).padding(15.dp)) }
-        item { Text("Clinicalc is decision support for qualified professionals. Verify every result against current guidance and local protocols.", color = Muted, fontSize = 12.sp, lineHeight = 18.sp) }
-    }
-}
-
-@Composable private fun GlassCard(color: Color, content: @Composable () -> Unit) { Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), color = color.copy(.82f), tonalElevation = 0.dp) { Box(Modifier.padding(22.dp)) { content() } } }
-@Composable private fun EmptyScreen(title: String, body: String) { Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) { Text(title, color = Ink, fontSize = 36.sp, fontWeight = FontWeight.Bold); Spacer(Modifier.height(10.dp)); Text(body, color = Muted, fontSize = 16.sp) } }
-
-private fun loadCatalog(context: android.content.Context): List<CatalogTool> {
-    val source = runCatching { context.assets.open("catalog.md").bufferedReader().use { it.readText() } }.getOrNull().orEmpty()
-    val headings = Regex("^\\*\\*([^*]+)\\*\\*", RegexOption.MULTILINE).findAll(source).map { it.groupValues[1].trim() }.distinctBy { it.lowercase() }.toList()
-    val known = mapOf(
-        "Anion gap" to "Na − (Cl + HCO₃)",
-        "MAP" to "DBP + (SBP − DBP) / 3",
-        "CHA2DS2-VASc" to "CHF + HTN + Age + Diabetes + Stroke/TIA + Vascular disease + Sex",
-        "HEART" to "History + ECG + Age + Risk factors + Troponin",
-        "qSOFA" to "RR ≥22 + SBP ≤100 + altered mentation",
-        "CURB-65" to "Confusion + Urea + RR ≥30 + low BP + Age ≥65",
-        "Glasgow Coma Scale" to "Eye + Verbal + Motor",
-        "MELD" to "3.78 ln(bilirubin) + 11.2 ln(INR) + 9.57 ln(creatinine) + 6.43"
-    )
-    return headings.map { raw ->
-        val name = raw.substringBefore(" —").trim(); val category = headingsCategory(source, raw); val formula = known.entries.firstOrNull { name.contains(it.key, true) }?.value
-        CatalogTool(name, category, raw.substringAfter(" —", "Clinical scoring system").trim(), formula, formula != null)
-    }.filter { it.name.length > 2 }.ifEmpty { listOf(CatalogTool("Catalog unavailable", "System", "Source asset could not be loaded", null, false)) }
-}
-
-private fun headingsCategory(source: String, heading: String): String { val index = source.indexOf("**$heading**"); val prefix = if (index >= 0) source.substring(0, index) else ""; return prefix.substringAfterLast("### ", "Clinical tools").lineSequence().firstOrNull()?.trim()?.ifBlank { "Clinical tools" } ?: "Clinical tools" }
+@Composable private fun Converter() { var value by remember { mutableStateOf("") }; var output by remember { mutableStateOf("") }; Column(Modifier.fillMaxSize().padding(22.dp), Arrangement.spacedBy(14.dp)) { Text("CONVERTER", color = Teal, fontWeight = FontWeight.Bold); Text("Clinical units", color = Ink, fontSize = 36.sp, fontWeight = FontWeight.Bold); NumericField("Creatinine mg/dL", value) { value = it; output = it.toDoubleOrNull()?.let { n -> ClinicalEngine.convert(n, "mg/dL", "µmol/L").toString() } ?: "" }; Panel(Mint) { Text(if (output.isBlank()) "Enter a value" else "$output µmol/L", color = Ink, fontSize = 24.sp, fontWeight = FontWeight.Bold) }; Text("Offline conversion using the WO-6 factors. Values are not stored.", color = Muted) } }
+@Composable private fun Profile() { Column(Modifier.fillMaxSize().padding(22.dp), Arrangement.spacedBy(15.dp)) { Text("PROFILE", color = Teal, fontWeight = FontWeight.Bold); Text("Clinicalc", color = Ink, fontSize = 38.sp, fontWeight = FontWeight.Bold); Panel(Color.White.copy(.9f)) { Text("Privacy first", color = Teal, fontWeight = FontWeight.Bold); Text("Calculator inputs and results are not persisted or transmitted.", color = Ink) }; Text("Appearance, accessibility, provenance, and verification controls are part of the production roadmap.", color = Muted) } }
+@Composable private fun NumericField(label: String, value: String, onValue: (String) -> Unit) { OutlinedTextField(value, onValue, Modifier.fillMaxWidth(), label = { Text(label) }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true) }
+@Composable private fun Panel(color: Color, content: @Composable ColumnScope.() -> Unit) { Surface(Modifier.fillMaxWidth(), RoundedCornerShape(24.dp), color, shadowElevation = 1.dp) { Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp), content = content) } }
