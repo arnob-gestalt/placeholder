@@ -1,0 +1,315 @@
+# CLINICALC — MASTER BUILD PROMPT
+### Liquid Glass UI on Android · 300+ clinical scoring tools, calculators & converters
+Audience: AI coding agent operating under `AGENTS.md` · Version 1.0
+
+---
+
+## 0. PRECEDENCE & HOW TO READ THIS
+
+- `AGENTS.md` governs **process**: the 6 phases, the 7 sprint gates (CLARIFY → DESIGN → SPEC → BUILD → REVIEW → VERIFY → DELIVER), approvals, one change at a time, no writes to the project folder and no commits without approval.
+- **This prompt governs product, design and data.** If the two conflict on process, `AGENTS.md` wins. If they conflict on product, stop and ask.
+- Anything marked **OPEN** is not decided. Present 2–3 options with trade-offs and one recommendation. Never silently choose. (`AGENTS.md`: "Don't fill in blanks.")
+- Your first output is **not code**. See §10.
+
+---
+
+## 1. MISSION & NON-NEGOTIABLES
+
+Build **Clinicalc**: an offline-first Android app that gives clinicians and students fast, correct, beautifully rendered access to 300+ medical scoring systems, bedside calculators and unit converters — wrapped in a UI that reproduces the **behaviour and feel** of Apple's iOS 26 "Liquid Glass" as faithfully as Android's graphics stack allows.
+
+| # | Non-negotiable | Meaning |
+|---|---|---|
+| N1 | Correctness beats beauty | A beautiful wrong number is the highest-severity defect in this project. |
+| N2 | Glass is chrome, content is solid | Glass floats *above* content (nav, toolbars, controls, sheets). Results, inputs, formulas and reference text sit on solid surfaces. This is also Apple's own rule for the material. |
+| N3 | Legibility floor | Every input and result meets the contrast targets in §4.5 against the **worst-case backdrop**, in every glass mode. |
+| N4 | Graceful degradation | Same layout and flows on every device; fewer effects on weaker ones. Never a broken, janky or unreadable screen. |
+| N5 | Original assets only | No SF Pro, no SF Symbols, no Apple marks or screenshots, no "iOS" branding. Replicate *behaviour*, not assets. |
+| N6 | Every number is traceable | Each tool shows formula, source citation, confidence and copyright status. |
+| N7 | No code-from-data | Formulas are declarative and run by a safe evaluator. No `eval`, no script strings in JSON. |
+
+---
+
+## 2. DECISIONS
+
+### 2.1 Locked (carry over — do not re-ask)
+
+| ID | Decision |
+|---|---|
+| L1 | Kotlin + Jetpack Compose, Material 3 Expressive as the base layer. **Not** React Native. |
+| L2 | Generic, schema-driven score engine (form renderer + calculation evaluator). **Never** per-score hardcoded UI. |
+| L3 | MVVM + Room for favorites / recents / history (local only). |
+| L4 | Single source of truth: `medical_scores.json`, generated from the source files in §3. |
+| L5 | Design language: "Calm Interface" (muted, desaturated palette; restrained risk-tier accents; true-black OLED dark mode) + Liquid Glass chrome + bento home + purposeful motion. |
+| L6 | Navigation: Home · Browse · Favorites · History · Profile, plus Unit Converter and per-score calculators. |
+| L7 | Distribution: Google Play. In-app ad support is planned. |
+| L8 | Build order: score engine → bento home → full dataset ingestion → polish. (A glass-engine spike, S0, is *proposed* in §7 for approval.) |
+
+### 2.2 OPEN (present options + recommendation in Phase 1/2/3)
+
+| ID | Open decision | Author's lean (agent may overrule with evidence) |
+|---|---|---|
+| O1 | Glass engine: (a) Kyant0 *AndroidLiquidGlass* backdrop library, (b) Haze (blur-first) + custom AGSL lens, (c) fully in-house AGSL | Put a `GlassSurface` interface in front; start with (a) behind it, compare with (c) in S0. Engine must be swappable. |
+| O2 | `minSdk` (24 / 26 / 29) and `targetSdk` | Verify current Play target requirement. Recommend using real device-distribution data. |
+| O3 | Ads: SDK, formats, placement | **Proposed guardrail:** ads never appear on a result card, over a glass surface, or inside a calculation flow. |
+| O4 | History privacy: save inputs by default vs. opt-in | Lean opt-in, no free-text fields, no patient identifiers anywhere. |
+| O5 | Typeface: Inter vs Roboto Flex vs another open variable font | Must support tabular numerals. |
+| O6 | Handling of copyright-restricted instruments (see §5.4) | Reference-only card until licence is confirmed. |
+| O7 | Tablet / foldable layouts in v1 | Decide in Phase 2. |
+
+---
+
+## 3. SOURCE DATA (the four files)
+
+| File | Role | Notes |
+|---|---|---|
+| `correctedformulas.txt` | **Highest precedence.** Corrections for flagged formula conflicts, ambiguous items and hard-blocked items. | Example: ABI / Rutherford / Fontaine / WIfI are split into four separate tools; CCS angina is a class selector, not arithmetic. |
+| `formulas_calculators_converters.md` | Bulk content (~1.4 MB). JSON-style entries with fields: `name, acronym, subcategory, purpose, input_variables[], formula, score_range, interpretation[], validation_population, original_citation, additional_validation, limitations, copyright_status, confidence`. | Conversation-style file with **repeated blocks** (e.g., HEART appears more than once). Dedupe. |
+| `mental.txt` | Additional cognitive / neuro scores, numbered from #203 (MMSE first), in prose + tables (not JSON). | Convert to the same schema. |
+| `medical_scoring_systems_catalog.xlsx` | Taxonomy and ordering. 297 rows · 21 categories · usage tiers (Tier 1: 133, Tier 2: 138, Tier 3: 26). Columns: Category, Usage Tier, Score, Purpose, Formula/Components. | Formula column is a *summary* — use as a cross-check, not as the source formula. |
+
+### Ingestion rules
+
+1. **Precedence:** corrected > md JSON > mental.txt > xlsx formula column.
+2. **One schema.** Keep all fields above and add: `id` (slug), `tier`, `category`, `engine_type`, `widget_hints`, `test_vectors[]`, `status` (`ready` · `needs_review` · `blocked` · `reference_only`).
+3. **Dedupe** by (acronym, normalised name). Log every merge and every conflict. Never silently pick a winner.
+4. **Descriptive-only classifications** (e.g., CCS class) → `engine_type: classification` (selector). Not arithmetic.
+5. **Sources that say an external calculator or coefficient table is required** → `status: blocked`, shown as a reference card with no computed output until coefficients are supplied and verified.
+6. **Confidence** `low` / `medium` → visible "Verify against source" chip. Never hidden.
+7. **Do not invent** formulas, coefficients, cut-offs, or PMIDs. If it isn't in the sources, it isn't in the app; flag the gap.
+8. **The 300+ target is reached only by real, verified entries** (scores + bedside calculators + converters). Do not pad. The xlsx lists 297 rows — reconcile against the md and mental.txt and report the true number.
+9. **Data Audit Report comes before any build** (see §10).
+
+---
+
+## 4. LIQUID GLASS SPECIFICATION
+
+Reference for *behaviour* (not assets): Apple's WWDC25 session "Meet Liquid Glass" (#219) and the HIG "Materials" section.
+
+### 4.1 Principle → Android implementation
+
+| Apple behaviour | What it must feel like | Android implementation | Fallback (lower tier) |
+|---|---|---|---|
+| **Real-time lensing** | Content behind glass bends near the edges; the centre stays readable. Not a flat frosted plane. | Record the scrolling content once into a shared `GraphicsLayer` per screen. Glass samples it through a `RenderEffect` chain: blur (API 31+) → AGSL `RuntimeShader` lens (API 33+). Lens = **rounded-rect / capsule SDF**; refraction displaces samples along the SDF gradient inside an edge band ("compressed rim"); tiny per-channel offset for dispersion; +10–30% saturation on the sampled backdrop (vibrancy); fine noise grain against banding. | Blur + tint + rim highlight (no refraction) → translucent gradient + rim → solid. |
+| **Specular highlights** | A moving sheen on the rim that reacts to tilt and touch. | Fresnel-style rim highlight in the shader; light direction driven by `TYPE_GAME_ROTATION_VECTOR` (or gravity) through a low-pass filter, ≤30 Hz. Unregister sensors when paused/static. | Fixed light from top-left (~315°). |
+| **Organic materialisation** | Elements appear/disappear by *modulating light bending*, not by alpha fade. | Animate lens strength, blur radius, rim intensity and shadow together (0 → 1). Opacity stays ~1 during the animation. | Short scale + alpha crossfade. |
+| **Thickening on expand** | When a toolbar becomes a menu or sheet, the material gets *thicker*: deeper shadow, softer light scatter. | Interpolate between material tiers (§4.3) — Regular → Thick — for blur, shadow radius/alpha, and refraction strength during the expand spring. | Interpolate shadow + tint only. |
+| **Fluid morphing** | Nearby glass shapes merge like liquid; a button grows into its menu. | `GlassContainer` renders adjacent shapes in **one pass** using an SDF **smooth-union**. Cap shapes per container (start at 8). Morph bounds with a spring. | Shared-element bounds transform. |
+| **Interactive glass** | Press = the glass swells, brightens, springs back. Dragging the tab indicator = a magnifying lens sliding between tabs. | Press: scale ≈ 1.04–1.08 + rim boost, spring release (start `damping 0.7, stiffness ≈ 380`). Tab indicator: draggable lens with ~1.1× magnification while touched. | Scale + tint change. |
+| **Intelligent legibility** | Foreground flips light/dark based on what's under it. | §4.5. | Theme-driven foreground + guaranteed scrim. |
+| **Concentricity** | Shapes nest and echo the screen's corners. Capsules everywhere. | Nested radius rule: `inner = outer − padding`. Read device corners via `WindowInsets.getRoundedCorner` (API 31+) and align edge-hugging bars to them. Implement a **continuous-corner (squircle)** shape, not a plain rounded rect. Default control shape = capsule. | Fixed 28 dp outer radius. |
+| **Shrinking chrome** | Bottom bar collapses out of the way on scroll-down, returns on scroll-up. | `NestedScrollConnection` drives a `collapseFraction` (0–1). Collapsed = compact capsule showing only the active tab; the lens morphs, not fades. | Slide + alpha. |
+| **Layered icon** | Depth from stacked translucent layers. | Adaptive icon: foreground / background / **monochrome** (themed) layers, designed with layered depth. (The launcher can't composite real glass — fake it in the artwork.) | — |
+| **User adjustability** | Clear ↔ Tinted control for legibility. | §4.7 Glass Style setting. | — |
+
+### 4.2 Where glass is allowed
+
+| Surface | Glass? | Material |
+|---|---|---|
+| Bottom navigation bar, top app bar / search capsule | ✅ | Regular |
+| Floating action cluster, filter chips, segmented controls, toggles, sliders' thumbs | ✅ | Thin / Regular |
+| Bottom sheets & menus (chrome + container) | ✅ | Thick |
+| Toasts / snackbars | ✅ | Thin |
+| Score input fields, steppers' value areas | ❌ | Solid tonal surface |
+| **Result value, risk band, interpretation text** | ❌ (glass *rim* only) | Solid + rim light |
+| Formula, citations, limitations, long text, tables | ❌ | Solid |
+| Ads | ❌ | Never on glass |
+| Glass on glass (stacked) | ❌ | Forbidden — flatten the lower layer |
+
+### 4.3 Material tiers — **starting values, tune on-device in the Glass Lab**
+
+| Tier | Use | Blur (dp) | Tint α (light / dark) | Edge band (dp) | Refraction (0–1) | Dispersion (0–1) | Shadow |
+|---|---|---|---|---|---|---|---|
+| Thin | chips, tags, toasts | 6 | .10 / .08 | 10 | .45 | 0 | soft, small |
+| Regular | bars, buttons, segmented | 16 | .14 / .10 | 16 | .60 | .15 | soft |
+| Thick | sheets, morphing menus, result "condense" | 28 | .22 / .16 | 22 | .80 | .20 | deep, wide |
+| Solid | a11y mode, Tier S, all content | 0 | tonal surface | — | 0 | 0 | 1 px inner highlight |
+
+### 4.4 Ambient backdrop (needed — glass over flat white/black looks dead)
+
+- A slowly drifting, very low-contrast **mesh-gradient layer** behind the content gives glass something to refract. Muted "Calm Interface" hues; **per-specialty hue shift** (e.g., cardio, neuro, renal each get a desaturated identity hue).
+- In true-black OLED dark mode the ambient layer is sparse and dim (a few soft glows), so blacks stay black while glass still has material.
+- Ambient layer animates only when the screen is idle-visible; pauses under battery saver, Tier ≥ C, or animator scale = 0.
+
+### 4.5 Adaptive legibility (the hard part)
+
+| Requirement | Target |
+|---|---|
+| Body / input text | ≥ 4.5 : 1 (WCAG 2.2 AA) |
+| Large text, icons | ≥ 3 : 1 |
+| **Result value & risk label** | **aim ≥ 7 : 1** |
+| Font scale | works to 200% without clipping; capsules grow |
+| Tap targets | ≥ 48 dp; capsule height 48–56 dp |
+| Risk tier | never colour alone — colour + icon + text label |
+
+**Method (deterministic first):**
+1. Guarantee contrast with tint + an adaptive scrim so a single theme-chosen foreground works. Prefer this — it costs nothing per frame.
+2. Only where the backdrop can genuinely swing light↔dark under a control (e.g., scrolling bento cards under the bottom bar), sample backdrop luminance from a downscaled region (≈16×16) at ≤10 Hz, with **hysteresis** (~0.05) and a 150 ms foreground crossfade. Measure the cost; drop to method 1 if it shows in frame time.
+3. **CI check:** render every glass component over worst-case backdrops — pure white, pure black, max-chroma stripes, high-frequency checkerboard, each risk-tier bento colour — and assert the contrast ratios above. Run on an API 33+ emulator or device (JVM-only tests can't run AGSL).
+
+### 4.6 Device tiers, budgets, fallbacks
+
+| Tier | Condition (auto-detected) | Experience |
+|---|---|---|
+| **A** | API 33+, capable GPU, no thermal throttling | Full: refraction, dispersion, sensor specular, morph |
+| **B** | API 31–32, or mid GPU | Blur + tint + static specular; no refraction |
+| **C** | API < 31, low RAM, or sustained jank | Translucent gradient + rim; no backdrop sampling |
+| **S** | Battery saver, user "Solid", accessibility | Solid tonal surfaces; keeps the same layout |
+
+Rules:
+- **One shared backdrop layer per screen.** Never one per element.
+- **≤ 4 simultaneous backdrop-sampling glass elements** on screen (start value; measure). Bottom bar + top bar + 1–2 floating.
+- **No real glass inside `LazyColumn` items.** List items use pre-baked "glass-look" surfaces without sampling.
+- Render the blur at reduced scale (≈0.5×) where quality allows.
+- **Runtime governor:** watch frame stats (JankStats); on sustained jank step down one tier and remember the decision per device.
+- Sensors off when the screen is static, in battery saver, or animator scale = 0. Everything motion-related honours `ANIMATOR_DURATION_SCALE`.
+- Targets: no visible jank while scrolling with glass on; p95 frame time within the display's refresh budget on the **physical low-end reference device**. Emulator numbers don't count as evidence.
+
+### 4.7 Settings (Profile → Appearance)
+
+| Setting | Options |
+|---|---|
+| Glass Style | **Clear** · **Tinted** · **Frosted** (heavier tint/blur) |
+| Glass intensity | slider (scales refraction + tint together) |
+| Solid mode | on/off — accessibility, removes all effects, same layout |
+| Motion | follows system; in-app "Reduced motion" |
+| Tint source | Calm palette (default) or Material You dynamic colour (API 31+) |
+| Haptics | on/off |
+
+### 4.8 Typography, icons, shape, colour
+
+- Typeface: open-licence variable font (O5). **Tabular numerals** for every score, input and unit.
+- Sizes: results ≥ 36 sp display, inputs ≥ 16 sp, secondary ≥ 12 sp.
+- Icons: open-licence rounded set (e.g., Material Symbols Rounded, variable weight) or original. Never SF Symbols.
+- Colour: Calm Interface palette; risk tiers are muted with icon + text; dark mode = true black with glass re-tuned separately (dark tint values differ from light).
+- Shape: capsule default; continuous corners; nested-radius rule (§4.1).
+
+### 4.9 Glass Lab (debug screen — built first)
+
+Hidden screen containing every glass component over selectable backdrops, with live sliders for each parameter in §4.3, the current device tier, a tier override, and a frame-time overlay. It is the tuning tool, the screenshot-test source, and the evidence for engine decision O1.
+
+---
+
+## 5. PRODUCT SPEC
+
+### 5.1 Score engine (L2)
+
+| `engine_type` | Examples | Notes |
+|---|---|---|
+| `additive_points` | CHA₂DS₂-VASc, CURB-65, qSOFA, HEART | Toggles / radio chips, points summed |
+| `banded_lookup` | GCS, NEWS2, ECOG PS | Component tables → total → band |
+| `formula` | CKD-EPI, MELD, anion gap, BSA | Typed AST evaluator with units; no string `eval` |
+| `regression` | Logistic / Cox-style models | Coefficients in data; `1/(1+e^-x)` supported; **blocked** if coefficients are missing |
+| `classification` | CCS angina class | Selector only |
+| `multi_component` | WIfI | Independent sub-scores → combined stage lookup |
+| `questionnaire` | PHQ-9 and other item-based scales | Item lists, per-item scoring, severity bands |
+| `date_based` | EDD, gestational age | Date pickers, no timezone bugs |
+| `converter` | Unit conversions | Analyte-aware (e.g., glucose, creatinine, HbA1c) — list derived from the files, not invented |
+
+Form renderer widgets (chosen by `widget_hints` / variable type): toggle · radio chips · stepper · slider · numeric with **unit switch** · date picker · dropdown. Live recompute on every change. Validation with plausible-range warnings (warn, don't block).
+
+Every tool screen shows: inputs → **result** → active band highlighted ("you are here") → interpretation → formula → citation (+PMID where present) → validation population → limitations → confidence chip → copyright status.
+
+### 5.2 Screens (Phase 2 must spec each, incl. empty / error / edge states)
+
+| Screen | Key content |
+|---|---|
+| **Home (bento)** | Quick Calc, Recents, Favorites, Bedside Essentials (Tier 1), Specialty grid, search capsule |
+| **Browse** | Acronym-first fuzzy search (Room FTS), category chips, tier filter, sort |
+| **Score screen** | Inputs, result card, interpretation, references, favorite toggle |
+| **Converter** | Category selector, bidirectional fields, swap, copy |
+| **Favorites / History** | Local only; clear-all; export off by default |
+| **Profile / Settings** | §4.7, disclaimer, about, data-sources, licences |
+
+### 5.3 The "result moment" (signature interaction)
+
+When inputs are complete, the result card **condenses** from Regular to Thick glass over the ambient backdrop, then *settles into its solid content surface* as the number appears. The rim takes a **muted risk-tier light**; the number and label are on the solid surface (N2/N3). Under Reduced motion / Solid mode it's an instant state change.
+
+### 5.4 Clinical safety, legal & store compliance
+
+- **Disclaimer** (onboarding + result footer): decision support for qualified professionals; not a substitute for clinical judgement; verify against source.
+- **Clinical review gate:** a tool moves `needs_review → ready` only after the product owner approves a per-batch review sheet (formula, bands, ≥3 test vectors, citation).
+- **Test vectors:** ≥3 per tool (low / mid / high) **plus every band boundary**, from published worked examples. If none exist, hand-derive from the formula and mark `derived`. Unit tests run in CI; a failing vector blocks release.
+- **Copyright-restricted instruments** (e.g., MMSE, MoCA and any `copyright_status` ≠ public domain / open): do **not** ship verbatim item text, figures or scoring sheets unless a licence is confirmed. Ship a reference-only card (what it measures, citation, where to obtain it). Report every such tool in the Data Audit.
+- **No PHI:** no names, IDs or free-text notes stored. Nothing leaves the device by default.
+- **Play Store (Phase 6):** verify the current Health/medical-app declarations, data-safety form and medical-claims policy at submission time. Ad placement per O3.
+- Edge-to-edge and predictive back are required behaviours for current target SDKs.
+
+---
+
+## 6. CLINICALC TWISTS (beyond a straight copy)
+
+| # | Twist | Why |
+|---|---|---|
+| T1 | **Clinical Legibility Floor** enforced by CI contrast tests | Glass is risky for clinical data; this makes safety a build check. |
+| T2 | **Glass chrome / solid content** with the **Result Moment** (§5.3) | Delight without ever putting a number on a refracting surface. |
+| T3 | **Specialty ambient hues** (§4.4) | Gives glass something to refract and gives each specialty an identity. |
+| T4 | **Risk-tier rim light** — muted colour + icon + text | Fast at-a-glance triage; accessible. |
+| T5 | **Thumb-zone ergonomics** — floating glass action cluster and bottom-anchored search | One-handed use on ward rounds. |
+| T6 | **Glass haptics** — tick on segmented/slider, confirm on result, toggle on/off | Physical "click" feel; use platform haptic constants, verify per API. |
+| T7 | **Quick Calc morph** — long-press the bottom-bar capsule; it morphs into a calculator picker | Showcases fluid morphing where it's useful. |
+| T8 | **Android-native respect** — predictive back (sheets shrink toward origin), themed icon, Material You tint option, edge-to-edge | Feels like a first-class Android app, not an iOS skin. |
+| T9 | **Entry focus** — during data entry, chrome recedes (thinner glass, lower shimmer) | Less distraction while typing numbers. |
+| T10 | **Tier auto-governor** | Same app feels good on flagship and low-end phones. |
+
+---
+
+## 7. EXECUTION PLAN (each sprint runs the 7 gates from `AGENTS.md`)
+
+| Sprint | Goal | Exit evidence |
+|---|---|---|
+| **S0 — Glass Lab spike** *(proposed)* | Prove refraction, blur, specular, tier detection and governor on real devices; decide O1 | Video + screenshots, frame-time report on ≥3 device classes (incl. one physical low-end), engine recommendation |
+| **S1 — Design system** | Tokens, `GlassSurface`, `GlassButton`, `GlassNavBar`, `GlassSheet`, `GlassSegmented`, `GlassChip`, ambient backdrop, component gallery, CI contrast tests | Gallery in light/dark × 4 tiers, CI green |
+| **S2 — Score engine + 10 pilot tools** | Cover every `engine_type` (e.g., GCS, NEWS2, CURB-65, qSOFA, CHA₂DS₂-VASc, MELD, ECOG PS, PHQ-9, plus CKD-EPI and anion gap) | Test vectors pass; owner review sheet |
+| **S3 — App shell** | Bento Home, tab bar with scroll-shrink + lens, search, Room (favorites / recents / history) | Screen recording, jank report |
+| **S4 — Data pipeline + Tier 1** | Ingest all four files → `medical_scores.json v1`, coverage report, Tier 1 (133) rollout in review batches | Audit diff, batch sign-offs |
+| **S5 — Tier 2** | Roll out remaining tools in batches | Same |
+| **S6 — Tier 3 + converters** | Long-tail scores, all converters | Same |
+| **S7 — Polish** | Morphs, haptics, a11y pass (TalkBack, 200% font, Solid mode), themed icon, tablet/foldable (O7) | A11y report |
+
+Then Phase 5 (functional, regression, performance, security, UAT) and Phase 6 (production, Play submission) per `AGENTS.md`. Every DELIVER is **visual** — screenshots and a screen recording, never just a summary.
+
+---
+
+## 8. DEFINITION OF DONE
+
+| Area | Pass criteria |
+|---|---|
+| Visual | Glass looks right in light/dark at all tiers; gallery reviewed by owner |
+| Motion | Materialise, morph, shrink, press and predictive-back behave per §4.1; respect reduced motion |
+| Performance | §4.6 targets met on the physical low-end device; no glass in list items |
+| Legibility | §4.5 CI checks green; Solid mode verified |
+| Accessibility | TalkBack labels, 48 dp targets, 200% font, non-colour risk cues |
+| Correctness | All test vectors + boundaries pass; owner sign-off on every batch |
+| Data | Audit report clean; no duplicates; blocked / restricted items correctly shown |
+| Compliance | Disclaimers present; restricted instruments handled; no PHI; Play checklist done |
+| Process | Reviewer sub-agent cleared every non-trivial change; no unapproved commits |
+
+---
+
+## 9. ANTI-PATTERNS (reject on sight)
+
+- "Glass" = white at 20% alpha over a flat background. That's frosted plastic, not lensing.
+- Blurring every list row, or a backdrop layer per element.
+- Glass on glass; text over a busy backdrop with no scrim.
+- Putting a result value, band, or formula on a refracting surface.
+- Alpha-fading glass in and out instead of modulating lens/blur/rim.
+- Hardcoded per-score screens; string `eval`; formulas copied from memory instead of the source files.
+- Hiding low-confidence or restricted tools rather than labelling or gating them.
+- Padding the tool count.
+- Apple fonts, SF Symbols or Apple screenshots.
+- Dark glass on pure black with no ambient material (looks dead).
+- Shipping effects that haven't been measured on a low-end physical device.
+
+---
+
+## 10. YOUR FIRST RESPONSE (no code, no project-folder writes)
+
+Deliver these five items, then **stop and wait for approval**:
+
+1. **Phase 1 recap (one page):** scope in/out, locked decisions L1–L8 confirmed, and open decisions O1–O7 each with 2–3 options and one recommendation.
+2. **Data Audit Report** from the four actual files: counts by category and tier; duplicates found; conflicts and how the precedence rule resolves them; `blocked`, `reference_only` and copyright-restricted items; xlsx ↔ md ↔ mental.txt coverage gaps in both directions; the true reconciled tool count.
+3. **Phase 2 plan:** the list and order of design specs you will write (token sheet, component specs, all §5.2 screens with empty/error/edge states), with wireframes for Home bento, Score screen, Result moment and the bottom-bar morph.
+4. **S0 Glass Lab plan:** devices, pass/fail criteria, what evidence you'll bring back.
+5. **Risks you see** in this prompt — including anything you think is infeasible on Android — stated plainly, with a proposed alternative.
+
+Do not fill blanks. Do not begin Phase 3 or 4 without written approval.
