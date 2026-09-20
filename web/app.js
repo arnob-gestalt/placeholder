@@ -67,7 +67,7 @@ function fieldHtml(inp) {
   return `<label>${esc(inp.label)}${inp.unit ? ` (${esc(inp.unit)})` : ''}<input type="number" step="any" data-key="${inp.key}" placeholder="Enter value"></label>`;
 }
 function detail(t) {
-  const s = t.spec, ext = t.external;
+  const s = (t.spec && t.ready) ? t.spec : null, ext = t.external;
   const body = s ? `<div class="fields">${s.inputs.map(fieldHtml).join('')}</div><div class="result"><label>Live result</label><strong id="result">-</strong><small>Verify against current local protocol.</small></div><div class="converters"><h3>Unit converter</h3><label>Value <input type="number" id="conv-v" step="any"></label><label>Unit <select id="conv-u">${CONVERTERS.map((c, i) => `<option value="${i}">${esc(c.label)} (${esc(c.from)} to ${esc(c.to)})</option>`).join('')}</select></label><strong id="conv-r"></strong></div>`
     : `<div class="result"><label>${ext ? 'External-only' : 'Reference only'}</label><strong>${ext ? esc(ext.name) : 'No computed output'}</strong><small>${esc(ext ? ext.note : 'Published coefficients still need review.')}</small></div>${ext && ext.link ? `<p><a href="${ext.link}" target="_blank" rel="noopener">Open external calculator</a></p>` : ''}`;
   return `<section class="detail"><article class="panel"><button class="back" data-screen="browse">Back to catalog</button><div class="eyebrow" style="margin-top:25px">${esc(t.category)}</div><h1>${esc(t.name)}</h1><p>${esc(t.summary)}</p><button id="save">${state.saved.includes(t.name) ? 'Saved' : 'Save'}</button>${body}</article><aside class="panel side"><div><h3>Formula</h3><code>${esc(s ? s.formula : 'Published scoring table or external model required.')}</code></div><div><h3>Source status</h3><p>${s ? esc(s.citation || 'Catalog formula') : 'Reference heading. Computation blocked until reviewed.'}</p></div><div><h3>Clinical disclaimer</h3><p>Decision support for qualified professionals. Verify every result against current guidance.</p></div></aside></section>`;
@@ -107,7 +107,7 @@ function bind() {
   const sv = document.querySelector('#save');
   if (sv) sv.onclick = () => { const n = state.screen; state.saved = state.saved.includes(n) ? state.saved.filter(x => x !== n) : [...state.saved, n]; localStorage.setItem('clinicalc-web-saved', JSON.stringify(state.saved)); render(); };
   const t = state.tools.find(x => x.name === state.screen);
-  if (t && t.spec) {
+  if (t && t.spec && t.ready) {
     const upd = () => { try { document.querySelector('#result').textContent = fmt(computeScore(t.spec, readVals(t.spec))); } catch (e) { /* empty */ } };
     document.querySelectorAll('[data-key]').forEach(el => { el.oninput = upd; el.onchange = upd; });
     upd();

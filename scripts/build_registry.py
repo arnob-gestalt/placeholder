@@ -94,6 +94,21 @@ def numeric_options(range_or_options, points):
     if opts: return opts
     return None
 
+def single_boolean_points(range_or_options, points):
+    """Accept one explicit boolean-style mapping, e.g. "Present = 1".
+
+    Only fires when the text has exactly one '=' part and the right-hand
+    points match the points_or_coefficient column, so threshold text like
+    "≥22 = 1 point" with a "0 or 1" column stays reference-only.
+    """
+    r = (range_or_options or "").strip()
+    if ";" in r: return None
+    m = re.match(r"\s*(.+?)\s*=\s*([+\-]?\d+(?:\.\d+)?)\s*$", r)
+    if not m: return None
+    p = parset_points(points)
+    if p is None or float(m.group(2)) != p: return None
+    return p
+
 def build_inputs(enc):
     """Returns (inputs, computable, max_score) for points-sum auto-computation."""
     ivs = enc.get("input_variables") or []
@@ -120,6 +135,11 @@ def build_inputs(enc):
             total_max += max(o["points"] for o in opts)
             inputs.append({"key": key, "label": v.get("variable"), "type": "select",
                            "description": v.get("description"), "options": opts})
+        elif (sp := single_boolean_points(rng, pts)) is not None:
+            total_max += sp
+            inputs.append({"key": key, "label": v.get("variable"), "type": "boolean",
+                           "description": v.get("description") or rng, "unit": v.get("unit"),
+                           "points": sp})
         elif re.match(r"^0[–\-] ?\d+$", pts.replace(" ", "")) and YESNO.search(rng) is None and ("0" in rng or "–" in rng or "-" in rng):
             computable = False
             inputs.append({"key": key, "label": v.get("variable"), "type": "select",

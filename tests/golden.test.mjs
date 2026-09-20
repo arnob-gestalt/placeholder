@@ -33,9 +33,8 @@ test('MELD-Na bounded 6-40', () => {
   assert.equal(pts('meld-na', { meld: 6, na: 137 }), 6); });
 test('PERC negative only when no disqualifying criterion', () => {
   assert.equal(pts('perc', {}), 'PERC-negative');
-  assert.equal(pts('perc', { age: 1 }), 'PERC-positive');
-  assert.equal(pts('perc', { hr: 1 }), 'PERC-positive');
-  assert.equal(pts('perc', { spo2: 1 }), 'PERC-positive'); });
+  for (const k of ['age', 'hr', 'spo2', 'hem', 'est', 'prev', 'leg', 'surg'])
+    assert.equal(pts('perc', { [k]: 1 }), 'PERC-positive', k); });
 test('Child-Pugh=9', () => assert.equal(pts('child-pugh', { bili: 'b2', alb: 'a2', inr: 'i1', asc: 'm', enc: 'm' }), 9));
 test('QTc Bazett=400', () => assert.equal(Math.round(pts('qtc', { qt: 400, hr: 60 }).bazett), 400));
 test('HATCH max=7', () => assert.equal(maxOf('hatch'), 7));

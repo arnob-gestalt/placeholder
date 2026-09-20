@@ -19814,29 +19814,26 @@
     {
      "key": "aortic-pain",
      "label": "Aortic pain",
-     "type": "text",
+     "type": "boolean",
      "description": "Chest/abdominal/back pain that is abrupt, severe, ripping/tearing",
      "unit": "boolean",
-     "options_text": "Present = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "high-risk-conditions",
      "label": "High-risk conditions",
-     "type": "text",
+     "type": "boolean",
      "description": "Marfan syndrome, known aortic valve disease, known aortic aneurysm, prior aortic surgery, family history of aortic disease",
      "unit": "boolean",
-     "options_text": "Present = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "high-risk-examination-features",
      "label": "High-risk examination features",
-     "type": "text",
+     "type": "boolean",
      "description": "Pulse deficit, new aortic regurgitation murmur, focal neurological deficit, hypotension/shock/tamponade",
      "unit": "boolean",
-     "options_text": "Present = 1",
-     "points_text": "1"
+     "points": 1.0
     }
    ],
    "score_max_computed": null,
@@ -24676,110 +24673,99 @@
    "tier": 3,
    "purpose": "Predicts severity and mortality of acute pancreatitis using clinical and laboratory data at admission and at 48 hours.",
    "formula_human": "Ranson = admission criteria (5 points) + 48-hour criteria (6 points).\n\nNote: Separate criteria exist for gallstone vs non-gallstone pancreatitis (gallstone criteria differ slightly in some age thresholds).\nNon-gallstone: Age >55, WBC >16k, Glucose >200, LDH >350, AST >250 at admission; Hct drop >10, BUN rise >5, Ca <8, PaO₂ <60, Base deficit >4, Fluid sequestration >6L at 48h.\nGallstone: Age >70, WBC >18k, Glucose >220, LDH >400, AST >250 at admission; same 48h criteria.",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "at-admission-age",
      "label": "At admission: Age",
-     "type": "text",
+     "type": "boolean",
      "description": "Age in years",
      "unit": "years",
-     "options_text": ">55 years = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-admission-wbc",
      "label": "At admission: WBC",
-     "type": "text",
+     "type": "boolean",
      "description": "White blood cell count",
      "unit": "×10⁹/L",
-     "options_text": ">16,000/µL = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-admission-glucose",
      "label": "At admission: Glucose",
-     "type": "text",
+     "type": "boolean",
      "description": "Blood glucose",
      "unit": "mg/dL",
-     "options_text": ">200 mg/dL = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-admission-ldh",
      "label": "At admission: LDH",
-     "type": "text",
+     "type": "boolean",
      "description": "Lactate dehydrogenase",
      "unit": "IU/L",
-     "options_text": ">350 IU/L = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-admission-ast",
      "label": "At admission: AST",
-     "type": "text",
+     "type": "boolean",
      "description": "Aspartate aminotransferase",
      "unit": "IU/L",
-     "options_text": ">250 IU/L = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-hct-drop",
      "label": "At 48h: Hct drop",
-     "type": "text",
+     "type": "boolean",
      "description": "Hematocrit decrease",
      "unit": "%",
-     "options_text": ">10% = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-bun-rise",
      "label": "At 48h: BUN rise",
-     "type": "text",
+     "type": "boolean",
      "description": "BUN increase despite IV fluids",
      "unit": "mg/dL",
-     "options_text": ">5 mg/dL rise = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-calcium",
      "label": "At 48h: Calcium",
-     "type": "text",
+     "type": "boolean",
      "description": "Serum calcium",
      "unit": "mg/dL",
-     "options_text": "<8 mg/dL = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-pao",
      "label": "At 48h: PaO₂",
-     "type": "text",
+     "type": "boolean",
      "description": "Arterial oxygen tension",
      "unit": "mmHg",
-     "options_text": "<60 mmHg = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-base-deficit",
      "label": "At 48h: Base deficit",
-     "type": "text",
+     "type": "boolean",
      "description": "Base deficit on ABG",
      "unit": "mEq/L",
-     "options_text": ">4 mEq/L deficit = 1",
-     "points_text": "1"
+     "points": 1.0
     },
     {
      "key": "at-48h-fluid-sequestration",
      "label": "At 48h: Fluid sequestration",
-     "type": "text",
+     "type": "boolean",
      "description": "Estimated fluid sequestration",
      "unit": "mL/48h",
-     "options_text": ">6,000 mL = 1",
-     "points_text": "1"
+     "points": 1.0
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 11.0,
    "bands": [
     {
      "range": "0–2",
