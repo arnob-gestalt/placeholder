@@ -7,9 +7,11 @@ export function computeScore(spec, v) {
     case 'osmolality': return 2 * v.na + v.glucose / 18 + v.bun / 2.8;
     case 'meld': { let b = Math.max(v.bili, 1), i = Math.max(v.inr, 1);
       let c = Math.min(Math.max(v.cr, 1), 4); if (v.dialysis) c = 4;
-      return Math.round(3.78 * Math.log(b) + 11.2 * Math.log(i) + 9.57 * Math.log(c) + 6.43); }
+      return Math.min(40, Math.max(6,
+        Math.round(3.78 * Math.log(b) + 11.2 * Math.log(i) + 9.57 * Math.log(c) + 6.43))); }
     case 'meld-na': { const na = Math.min(137, Math.max(125, v.na));
-      return Math.round(v.meld + 1.32 * (137 - na) - 0.033 * v.meld * (137 - na)); }
+      return Math.min(40, Math.max(6,
+        Math.round(v.meld + 1.32 * (137 - na) - 0.033 * v.meld * (137 - na)))); }
     case 'qtc': { const rr = 60 / v.hr;
       return { bazett: v.qt / Math.sqrt(rr), fridericia: v.qt / Math.cbrt(rr),
         hodges: v.qt + 1.75 * (v.hr - 60), framingham: v.qt + 0.154 * (1 - rr) * 1000 }; }

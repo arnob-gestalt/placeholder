@@ -6,9 +6,16 @@ export const REST3SPEC = [
     inputs: [yn('s3','S3 gallop or JVP>12',11),yn('mi','MI past 6 months',10),yn('pvc','PVCs >5/min',7),yn('rhy','Rhythm non-sinus',7),yn('age','Age >70',5),yn('em','Emergency op',4),yn('surg','Intraperitoneal/intrathoracic/aortic',3),yn('as','Significant aortic stenosis',3),yn('poor','Poor general status',3)],
     bands: [{ range:'0-5',label:'Class I',meaning:'~1%.'},{ range:'6-12',label:'Class II',meaning:'~7%.'},{ range:'13-25',label:'Class III',meaning:'~14%.'},{ range:'>=26',label:'Class IV',meaning:'~78%.'}] },
   { id: 'detsky', name: 'Detsky cardiac risk', category: 'Surgery/Perioperative', tier: 2,
-    purpose: 'Modified cardiac risk (App B Row 295; max 85).', formula: 'MI/CCS/angina/pulm-edema/AS items; 0-85',
+    // App B Row 295 prints "0-85+" but its own rows construct to 100 even with the
+    // logically-exclusive pairs grouped (MI periods, CCS III/IV, edema periods):
+    // 10+20+10+10+20+10+5+5+5+5=100. Pin behavior + flag; do not invent exclusions.
+    purpose: 'Modified cardiac risk (App B Row 295; doc 0-85+, constructed 100).', formula: 'MI(10/5)+CCSIII/IV(10/20)+unstable(10)+edema(10/5)+AS(20)+emerg(10)+poor/age/rhythm/pvc(5ea); constructed 0-100',
     engine: 'points-sum', citation: 'App B Row 295',
-    inputs: [yn('mi6','MI within 6 months',10),yn('mio','MI >6 months ago',5),yn('ccs3','CCS class III angina',10),yn('ccs4','CCS class IV angina',20),yn('unst','Unstable angina <6mo',10),yn('pew','Pulm edema within 1 wk',10),yn('pee','Pulm edema ever',5),yn('as','Suspected critical AS',20),yn('em','Emergency surgery',10),yn('poor','Poor status',5),yn('age','Age >70',5),yn('rhy','Non-sinus rhythm',5),yn('pvc','>5 PVCs/min',5)],
+    inputs: [sel('mi','MI history',[['n','None',0],['o','MI >6 months ago',5],['r','MI within 6 months',10]]),
+      sel('ang','Angina class',[['n','None',0],['c3','CCS class III',10],['c4','CCS class IV',20]]),
+      yn('unst','Unstable angina <6mo',10),
+      sel('pe','Pulmonary edema',[['n','None',0],['e','Ever',5],['w','Within 1 week',10]]),
+      yn('as','Suspected critical AS',20),yn('em','Emergency surgery',10),yn('poor','Poor status',5),yn('age','Age >70',5),yn('rhy','Non-sinus rhythm',5),yn('pvc','>5 PVCs/min',5)],
     bands: [{ range:'0-15',label:'Class I',meaning:'Low ~5%.'},{ range:'20-30',label:'Class II',meaning:'~17%.'},{ range:'>=30',label:'Class III',meaning:'High ~38%+.'}] },
   { id: 'ripasa', name: 'RIPASA', category: 'Emergency/General', tier: 2,
     purpose: 'Appendicitis probability (App B Row 165; doc range 0-16).', formula: 'Age>=40(1)+Female(0.5)+Sympt12-48h(0.5)+Anorexia(0.5)+NV(1)+Migration(1)+RIFtend(2)+Guard(1.5)+Rovsing(2)+SimPain(0.5)+Temp>=37(1)+WBC>10k(2)+CRP>5(1)+CXR(0.5); 0-16',
@@ -17,7 +24,7 @@ export const REST3SPEC = [
     bands: [{ range:'<5',label:'Low',meaning:'Low probability.'},{ range:'5-7.5',label:'Intermediate',meaning:'Observe/workup.'},{ range:'>=7.5',label:'High',meaning:'High probability.'}] },
   { id: 'lods', name: 'LODS', category: 'Critical care', tier: 2,
     purpose: 'Logistic organ dysfunction (App B Row 279; max 22).', formula: 'Neuro+CV+renal+hepatic+hematologic+respiratory organ bands; 0-22',
-    engine: 'points-sum', citation: 'App B Row 279',
+    engine: 'reference', citation: 'App B Row 279',
     inputs: [sel('neuro','Neurologic (GCS)',[['n','GCS 15',0],['a','GCS 13-14',1],['b','GCS 10-12',5],['c','GCS 6-9',7],['d','GCS <6',13]],'neuro'),
       sel('cv','Cardiovascular (worst)',[['n','Normal',0],['a','SBP150+/HR110+',1],['v','Mechanical ventilation',3],['b','SBP70-99/HR<=40',5],['c','SBP40-69',7],['d','SBP<40',11]],'cv'),
       sel('renal','Renal (urea worst)',[['n','Normal',0],['a','Urea 5-10',1],['b','Urea >10',7]],'renal'),

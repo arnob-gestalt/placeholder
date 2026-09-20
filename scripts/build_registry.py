@@ -38,8 +38,11 @@ def parse_encyclopedia(text):
         seg = text[h.start():end]
         m = re.search(r"```json(.*?)```", seg, re.S)
         if not m: continue
-        try: o = json.loads(m.group(1))
-        except Exception: continue
+        try:
+            o = json.loads(m.group(1))
+        except json.JSONDecodeError as e:
+            raise ValueError(f"malformed encyclopedia JSON for {h.group(1)} "
+                             f"({h.group(2).strip()}) at offset {m.start()}: {e}")
         if not isinstance(o, dict) or o.get("purpose") in ("…", "...", ""): continue
         o["_eid"] = h.group(1); o["_heading"] = h.group(2).strip()
         entries[h.group(1)] = o
@@ -67,18 +70,27 @@ def parset_points(p):
     m = re.match(r"^([+\-]?\d+(?:\.\d+)?)$", p)
     if m: return float(m.group(1))
     m = re.match(r"^(\d+(?:\.\d+)?)\s*(?:if present|points?)?$", p, re.I)
+    if m: return float(m.group(1))
     return None
 
 def numeric_options(range_or_options, points):
-    """Try to derive select options from range text + points."""
+    """Derive select options only from explicit clinical-range = points mappings.
+
+    Accepts parts like "<range> = <points>" and validates the assigned points
+    against the points_or_coefficient column. Returns None when the text is a
+    bare numeric range or the points cannot be validated, so the entry stays
+    reference-only instead of shipping a wrong auto-computed score.
+    """
     r = (range_or_options or "").strip()
-    # patterns like "0 = x; 1 = y; 2 = z" or "0 (none), 1 (mild)..."
+    # Require an '=' mapping per part; exclusion bands joined with '-'/'–'/'—'
+    # (e.g. "225-299 = 1") must never be read as point assignments.
     opts = []
     parts = re.split(r";", r)
     for part in parts:
-        m = re.match(r"\s*([+\-]?\d+(?:\.\d+)?)\s*[=:\-–—)]\s*(.+)", part.strip())
+        m = re.match(r"\s*(.+?)\s*=\s*([+\-]?\d+(?:\.\d+)?)\s*$", part.strip())
         if m and len(parts) > 1:
-            opts.append({"value": m.group(1), "label": part.strip()[:90], "points": float(m.group(1))})
+            opts.append({"value": m.group(1).strip()[:60] or m.group(2),
+                         "label": part.strip()[:90], "points": float(m.group(2))})
     if opts: return opts
     return None
 
@@ -192,7 +204,7 @@ def main():
 
     # Junk-row removals per WO-3
     removed = [r for r in registry if r["name"].strip().lower() in
-               ("framingham? no — skip", "framingham? no - skip", "toll? no — skip", "toll? no - skip")]
+               ("framingham? no", "toll? no")]
     registry = [r for r in registry if r not in removed]
 
     OUT.parent.mkdir(parents=True, exist_ok=True)

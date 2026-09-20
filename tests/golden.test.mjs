@@ -27,6 +27,15 @@ test('CHA2DS2-VASc=6', () => assert.equal(pts('cha2ds2-vasc', { chf: 1, htn: 0, 
 test('MELD=14', () => assert.equal(pts('meld', { bili: 2.0, inr: 1.5, cr: 1.0 }), 14));
 test('MELD clamps to 20', () => assert.equal(pts('meld', { bili: 0.6, inr: 0.9, cr: 5.2 }), 20));
 test('MELD-Na=20', () => assert.equal(pts('meld-na', { meld: 14, na: 130 }), 20));
+test('MELD capped at 40', () => assert.equal(pts('meld', { bili: 30, inr: 6, cr: 8 }), 40));
+test('MELD-Na bounded 6-40', () => {
+  assert.equal(pts('meld-na', { meld: 40, na: 125 }), 40);
+  assert.equal(pts('meld-na', { meld: 6, na: 137 }), 6); });
+test('PERC negative only when no disqualifying criterion', () => {
+  assert.equal(pts('perc', {}), 'PERC-negative');
+  assert.equal(pts('perc', { age: 1 }), 'PERC-positive');
+  assert.equal(pts('perc', { hr: 1 }), 'PERC-positive');
+  assert.equal(pts('perc', { spo2: 1 }), 'PERC-positive'); });
 test('Child-Pugh=9', () => assert.equal(pts('child-pugh', { bili: 'b2', alb: 'a2', inr: 'i1', asc: 'm', enc: 'm' }), 9));
 test('QTc Bazett=400', () => assert.equal(Math.round(pts('qtc', { qt: 400, hr: 60 }).bazett), 400));
 test('HATCH max=7', () => assert.equal(maxOf('hatch'), 7));
@@ -48,22 +57,27 @@ test('ARISCAT constructed max=116; doc claims 123', () => {
   assert.match(byId['ariscat'].formula, /0-123/); });
 test('MPI max=47', () => assert.equal(maxOf('mpi'), 47));
 test('Goldman=53 Detsky=85', () => assert.equal(maxOf('goldman'), 53));
-test('Detsky all max', () => assert.ok(maxOf('detsky') >= 85));
+test('Detsky grouped max=100; doc claims 0-85+', () => {
+  // Exclusive MI/angina/edema pairs are single-selects, yet levels still
+  // construct to 10+20+10+10+20+10+5+5+5+5=100 vs printed 0-85+.
+  assert.equal(maxOf('detsky'), 100);
+  assert.match(byId['detsky'].formula, /constructed 0-100/); });
 test('RIPASA constructed max=15; doc claims 16', () => {
   // Item values sum to 15.0, not the printed 16.
   assert.equal(maxOf('ripasa'), 15);
   assert.match(byId['ripasa'].formula, /0-16/); });
-test('LODS constructed max=60, doc range 0-22', () => {
-  // App B Row 279: organ maxima 13+11+7+10+12+7=60, but printed total range is
-  // 0-22 with one-criterion-per-organ rule. Max-of-levels cannot yield 22, so
-  // the source table is internally inconsistent; pin current behavior + flag.
-  assert.equal(maxOf('lods'), 60);
-  assert.match(byId['lods'].formula, /0-22/); });
+test('LODS is reference-only (unresolved 0-22 model)', () => {
+  // App B Row 279 prints 0-22 but its organ rows construct to 60; the
+  // calculator ships as a reference card until organ rules are verified.
+  assert.equal(byId['lods'].engine, 'reference'); });
 test('PESI=310 class V', () => assert.equal(pts('pesi', { age: 80, male: true, ca: true, hf: true, lung: true, hr: true, sbp: true, rr: true, t: true, ams: true, spo2: true }), 310));
 test('sPESI age>80=1', () => assert.equal(pts('spesi', { age: 1 }), 1));
 test('MMSE max=30', () => assert.equal(pts('mmse', { score: 30 }), 30));
 test('MoCA 25+1=26', () => assert.equal(pts('moca', { raw: 25, lowedu: 1 }), 26));
-test('IPSS-R very poor case=10->very high', () => assert.equal(pts('ipssr', { cyto: 'vp', blast: 'd', hb: 'c', plt: 'c', anc: 'b' }), 10));
+test('IPSS-R constructed max=10; doc claims 0-9', () => {
+  // Row 75 rows: cyto 0-4 + blasts 0-3 + Hb 0-1.5 + PLT 0-1 + ANC 0-0.5 = 0-10.
+  assert.equal(maxOf('ipssr'), 10);
+  assert.equal(pts('ipssr', { cyto: 'vp', blast: 'd', hb: 'c', plt: 'c', anc: 'b' }), 10); });
 test('creatinine converter round-trip', () => { const c = CONVERTERS.find(x => x.key === 'creatinine');
   assert.equal(convert(1.0, c), 88.4); assert.ok(Math.abs(convertBack(88.4, c) - 1.0) < 0.01); });
 test('mutual exclusion: age bands never double-count', () => {

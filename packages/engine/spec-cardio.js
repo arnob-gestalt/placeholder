@@ -49,9 +49,9 @@ export const CARDIOSPEC = [
     inputs: [yn('age','Age >65',1),yn('prev','Previous DVT/PE',1),yn('surg','Surgery/fracture <1 month',1),yn('ca','Active malignancy',1),yn('pain','Unilateral limb pain',1),yn('hem','Hemoptysis',1),sel('hr','Heart rate',[['n','<75 bpm',0],['m','75-94 bpm',1],['h','>=95 bpm',2]],'hr'),yn('palp','Palpation pain + unilateral edema',1)],
     bands: [{ range:'0-1',label:'Low',meaning:'PE ~8-10%.'},{ range:'2-5',label:'Intermediate',meaning:'~23-28%.'},{ range:'>=6',label:'High',meaning:'~74%.'}] },
   { id: 'perc', name: 'PERC', category: 'Respiratory', tier: 1,
-    purpose: 'PE exclusion - all 8 must be negative (App B Row 164).', formula: 'Age<50, HR<100, SpO2>94%, no hemoptysis/estrogen/prior VTE/leg swelling/surgery-trauma',
+    purpose: 'PE exclusion - negative only when no disqualifying criterion (App B Row 164).', formula: 'Any of: Age>=50, HR>=100, SpO2<=94%, hemoptysis, estrogen, prior VTE, leg swelling, surgery-trauma -> PERC-positive',
     engine: 'algorithm', citation: 'App B Row 164',
-    inputs: [yn('age','Age <50',0),yn('hr','HR <100',0),yn('spo2','SpO2 >94% RA',0),yn('hem','Hemoptysis',1),yn('est','Estrogen use',1),yn('prev','Prior DVT/PE',1),yn('leg','Unilateral leg swelling',1),yn('surg','Surgery/trauma <4wk',1)],
+    inputs: [yn('age','Age >=50',1),yn('hr','HR >=100',1),yn('spo2','SpO2 <=94% RA',1),yn('hem','Hemoptysis',1),yn('est','Estrogen use',1),yn('prev','Prior DVT/PE',1),yn('leg','Unilateral leg swelling',1),yn('surg','Surgery/trauma <4wk',1)],
     bands: [{ range:'PERC-negative',label:'PE excluded',meaning:'All 8 negative.'},{ range:'PERC-positive',label:'Cannot exclude',meaning:'Proceed to testing.'}],
     compute: 'perc' },
 ];

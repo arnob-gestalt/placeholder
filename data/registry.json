@@ -1,6 +1,6 @@
 {
  "version": "0.1.0",
- "count": 475,
+ "count": 473,
  "entries": [
   {
    "id": "MSC-0002",
@@ -1022,54 +1022,26 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "ready",
-   "engine": "points-sum",
+   "status": "reference",
+   "engine": "reference",
    "inputs": [
     {
      "key": "history",
      "label": "History",
-     "type": "select",
+     "type": "text",
      "description": "Clinical suspicion based on history characteristics",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = slightly suspicious",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = moderately suspicious",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = highly suspicious",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = slightly suspicious; 1 = moderately suspicious; 2 = highly suspicious",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "ecg",
      "label": "ECG",
-     "type": "select",
+     "type": "text",
      "description": "12-lead ECG findings",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = nonspecific repolarization disturbance",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = significant ST deviation",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = normal; 1 = nonspecific repolarization disturbance; 2 = significant ST deviation",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "age",
@@ -1078,57 +1050,39 @@
      "description": "Patient age in years",
      "options": [
       {
-       "value": "45",
+       "value": "<45",
+       "label": "<45 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "45–64",
        "label": "45–64 = 1",
-       "points": 45.0
+       "points": 1.0
+      },
+      {
+       "value": "≥65",
+       "label": "≥65 = 2",
+       "points": 2.0
       }
      ]
     },
     {
      "key": "risk-factors",
      "label": "Risk factors",
-     "type": "select",
+     "type": "text",
      "description": "Number of cardiovascular risk factors (hypertension, hyperlipidemia, DM, current/recent smoking, family history of premature CAD, obesity, sedentary lifestyle)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no risk factors",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = 1–2 risk factors",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = ≥3 risk factors or history of atherosclerotic disease",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = no risk factors; 1 = 1–2 risk factors; 2 = ≥3 risk factors or history of atherosclerotic disease",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "troponin",
      "label": "Troponin",
-     "type": "select",
+     "type": "text",
      "description": "Initial or serial troponin relative to local upper limit of normal (ULN)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = ≤ULN",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = 1–3× ULN",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = >3× ULN",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = ≤ULN; 1 = 1–3× ULN; 2 = >3× ULN",
+     "points_text": "0, 1, or 2"
     }
    ],
    "bands": [
@@ -1178,8 +1132,7 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Subjective components (History scoring varies by clinician). Validated primarily in ED populations; less studied in prehospital or primary care. Troponin assay-specific (high-sensitivity troponin may shift optimal cutoffs). Original validation used conventional troponin.",
-   "score_max_computed": 53.0
+   "limitations": "Subjective components (History scoring varies by clinician). Validated primarily in ED populations; less studied in prehospital or primary care. Troponin assay-specific (high-sensitivity troponin may shift optimal cutoffs). Original validation used conventional troponin."
   },
   {
    "id": "MSC-0021",
@@ -1576,40 +1529,95 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "platelet-count",
      "label": "Platelet count",
      "type": "select",
      "description": "Platelet count (×10⁹/L)",
-     "options_text": ">100 = 0; <100 = 1; <50 = 2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": ">100",
+       "label": ">100 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<100",
+       "label": "<100 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "<50",
+       "label": "<50 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "elevated-fibrin-marker-d-dimer-or-fdp",
      "label": "Elevated fibrin marker (D-dimer or FDP)",
      "type": "select",
      "description": "D-dimer or fibrin degradation products",
-     "options_text": "No increase = 0; moderate increase = 2; strong increase = 3",
-     "points_text": "0–3"
+     "options": [
+      {
+       "value": "No increase",
+       "label": "No increase = 0",
+       "points": 0.0
+      },
+      {
+       "value": "moderate increase",
+       "label": "moderate increase = 2",
+       "points": 2.0
+      },
+      {
+       "value": "strong increase",
+       "label": "strong increase = 3",
+       "points": 3.0
+      }
+     ]
     },
     {
      "key": "prolonged-pt",
      "label": "Prolonged PT",
      "type": "select",
      "description": "PT seconds above normal (or INR)",
-     "options_text": "<3 seconds prolonged = 0; ≥3 but <6 = 1; ≥6 = 2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "<3 seconds prolonged",
+       "label": "<3 seconds prolonged = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥3 but <6",
+       "label": "≥3 but <6 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥6",
+       "label": "≥6 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "fibrinogen",
      "label": "Fibrinogen",
      "type": "select",
      "description": "Serum fibrinogen level",
-     "options_text": ">1.0 g/L = 0; ≤1.0 g/L = 1",
-     "points_text": "0–1"
+     "options": [
+      {
+       "value": ">1.0 g/L",
+       "label": ">1.0 g/L = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≤1.0 g/L",
+       "label": "≤1.0 g/L = 1",
+       "points": 1.0
+      }
+     ]
     }
    ],
    "bands": [
@@ -1639,7 +1647,8 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Fibrinogen is an acute phase reactant and may be elevated despite DIC. D-dimer/FDP cutoffs vary by assay. Score designed for overt DIC — may miss early/chronic DIC. Does not capture clinical context. Multiple DIC scoring systems exist (ISTH, JMHW, JAAM)."
+   "limitations": "Fibrinogen is an acute phase reactant and may be elevated despite DIC. D-dimer/FDP cutoffs vary by assay. Score designed for overt DIC — may miss early/chronic DIC. Does not capture clinical context. Multiple DIC scoring systems exist (ISTH, JMHW, JAAM).",
+   "score_max_computed": 8.0
   },
   {
    "id": "MSC-0030",
@@ -1678,44 +1687,40 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "45",
+       "value": "≤44",
+       "label": "≤44 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "45–54",
        "label": "45–54 = 2",
-       "points": 45.0
+       "points": 2.0
       },
       {
-       "value": "55",
+       "value": "55–64",
        "label": "55–64 = 3",
-       "points": 55.0
+       "points": 3.0
       },
       {
-       "value": "65",
+       "value": "65–74",
        "label": "65–74 = 5",
-       "points": 65.0
+       "points": 5.0
+      },
+      {
+       "value": "≥75",
+       "label": "≥75 = 6",
+       "points": 6.0
       }
      ]
     },
     {
      "key": "chronic-health-points",
      "label": "Chronic Health Points",
-     "type": "select",
+     "type": "text",
      "description": "Severe organ system insufficiency or immunocompromised status before ICU admission (liver, cardiovascular, respiratory, renal, immunocompromised)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no organ insufficiency or immunocompromised",
-       "points": 0.0
-      },
-      {
-       "value": "5",
-       "label": "5 = if emergency postoperative or non-operative admission with chronic insufficiency",
-       "points": 5.0
-      },
-      {
-       "value": "2",
-       "label": "2 = elective postoperative admission with chronic insufficiency",
-       "points": 2.0
-      }
-     ]
+     "unit": "boolean",
+     "options_text": "0 = no organ insufficiency or immunocompromised; 5 = if emergency postoperative or non-operative admission with chronic insufficiency; 2 = elective postoperative admission with chronic insufficiency",
+     "points_text": "0, 2, or 5"
     }
    ],
    "bands": [
@@ -1804,15 +1809,11 @@
     {
      "key": "feature-2-inattention",
      "label": "Feature 2: Inattention",
-     "type": "select",
+     "type": "text",
      "description": "ASES letter recognition test: patient squeezes hand on letter 'A' when letters read. Inattention = <8 correct out of 10.",
-     "options": [
-      {
-       "value": "0",
-       "label": "0–10 correct",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0–10 correct; <8 = inattention positive",
+     "points_text": "positive if <8 correct"
     },
     {
      "key": "feature-3-altered-level-of-consciousness",
@@ -1826,15 +1827,11 @@
     {
      "key": "feature-4-disorganized-thinking",
      "label": "Feature 4: Disorganized thinking",
-     "type": "select",
+     "type": "text",
      "description": "Yes/no questions and command test (e.g., 'hold up this many fingers' + 'do the same thing with the other hand'). Score 0–4, positive if <4 correct.",
-     "options": [
-      {
-       "value": "0",
-       "label": "0–4 correct",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0–4 correct; <4 = disorganized thinking positive",
+     "points_text": "positive if <4 correct"
     }
    ],
    "bands": [
@@ -2082,24 +2079,34 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "40",
+       "value": "<40",
+       "label": "<40 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "40–59",
        "label": "40–59 = 7",
-       "points": 40.0
+       "points": 7.0
       },
       {
-       "value": "60",
+       "value": "60–69",
        "label": "60–69 = 12",
-       "points": 60.0
+       "points": 12.0
       },
       {
-       "value": "70",
+       "value": "70–74",
        "label": "70–74 = 15",
-       "points": 70.0
+       "points": 15.0
       },
       {
-       "value": "75",
+       "value": "75–79",
        "label": "75–79 = 16",
-       "points": 75.0
+       "points": 16.0
+      },
+      {
+       "value": "≥80",
+       "label": "≥80 = 18",
+       "points": 18.0
       }
      ]
     },
@@ -2110,19 +2117,29 @@
      "description": "Heart rate (bpm)",
      "options": [
       {
-       "value": "40",
+       "value": "<40",
+       "label": "<40 = 11",
+       "points": 11.0
+      },
+      {
+       "value": "40–69",
        "label": "40–69 = 2",
-       "points": 40.0
+       "points": 2.0
       },
       {
-       "value": "70",
+       "value": "70–119",
        "label": "70–119 = 0",
-       "points": 70.0
+       "points": 0.0
       },
       {
-       "value": "120",
+       "value": "120–159",
        "label": "120–159 = 4",
-       "points": 120.0
+       "points": 4.0
+      },
+      {
+       "value": "≥160",
+       "label": "≥160 = 7",
+       "points": 7.0
       }
      ]
     },
@@ -2133,14 +2150,24 @@
      "description": "Systolic blood pressure (mmHg)",
      "options": [
       {
-       "value": "70",
-       "label": "70–99 = 5",
-       "points": 70.0
+       "value": "<70",
+       "label": "<70 = 13",
+       "points": 13.0
       },
       {
-       "value": "100",
+       "value": "70–99",
+       "label": "70–99 = 5",
+       "points": 5.0
+      },
+      {
+       "value": "100–199",
        "label": "100–199 = 0",
-       "points": 100.0
+       "points": 0.0
+      },
+      {
+       "value": "≥200",
+       "label": "≥200 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -2149,8 +2176,18 @@
      "label": "Body temperature",
      "type": "select",
      "description": "Core temperature (°C)",
-     "options_text": "<39°C = 0; ≥39°C = 3",
-     "points_text": "0–3"
+     "options": [
+      {
+       "value": "<39°C",
+       "label": "<39°C = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥39°C",
+       "label": "≥39°C = 3",
+       "points": 3.0
+      }
+     ]
     },
     {
      "key": "oxygenation-pao-fio",
@@ -2159,9 +2196,24 @@
      "description": "PaO₂/FiO₂ ratio (if ventilated or CPAP)",
      "options": [
       {
-       "value": "100",
+       "value": "<100",
+       "label": "<100 = 11",
+       "points": 11.0
+      },
+      {
+       "value": "100–199",
        "label": "100–199 = 9",
-       "points": 100.0
+       "points": 9.0
+      },
+      {
+       "value": "≥200",
+       "label": "≥200 = 6",
+       "points": 6.0
+      },
+      {
+       "value": "not ventilated",
+       "label": "not ventilated = 0",
+       "points": 0.0
       }
      ]
     },
@@ -2172,9 +2224,19 @@
      "description": "24-hour urine output",
      "options": [
       {
-       "value": "500",
+       "value": "<500",
+       "label": "<500 = 11",
+       "points": 11.0
+      },
+      {
+       "value": "500–999",
        "label": "500–999 = 4",
-       "points": 500.0
+       "points": 4.0
+      },
+      {
+       "value": "≥1000",
+       "label": "≥1000 = 0",
+       "points": 0.0
       }
      ]
     },
@@ -2185,14 +2247,24 @@
      "description": "Blood urea nitrogen",
      "options": [
       {
-       "value": "6",
-       "label": "6–6.9 = 3",
-       "points": 6.0
+       "value": "<6",
+       "label": "<6 = 0",
+       "points": 0.0
       },
       {
-       "value": "7",
+       "value": "6–6.9",
+       "label": "6–6.9 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "7–9.9",
        "label": "7–9.9 = 4",
-       "points": 7.0
+       "points": 4.0
+      },
+      {
+       "value": "≥10",
+       "label": "≥10 = 6",
+       "points": 6.0
       }
      ]
     },
@@ -2203,9 +2275,19 @@
      "description": "White blood cell count (×10⁹/L)",
      "options": [
       {
-       "value": "1",
+       "value": "<1",
+       "label": "<1 = 12",
+       "points": 12.0
+      },
+      {
+       "value": "1–19.9",
        "label": "1–19.9 = 0",
-       "points": 1.0
+       "points": 0.0
+      },
+      {
+       "value": "≥20",
+       "label": "≥20 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -2216,8 +2298,18 @@
      "description": "Potassium (mmol/L)",
      "options": [
       {
-       "value": "3",
+       "value": "<3",
+       "label": "<3 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "3–4.9",
        "label": "3–4.9 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥5",
+       "label": "≥5 = 3",
        "points": 3.0
       }
      ]
@@ -2229,9 +2321,19 @@
      "description": "Sodium (mmol/L)",
      "options": [
       {
-       "value": "125",
+       "value": "<125",
+       "label": "<125 = 5",
+       "points": 5.0
+      },
+      {
+       "value": "125–144",
        "label": "125–144 = 0",
-       "points": 125.0
+       "points": 0.0
+      },
+      {
+       "value": "≥145",
+       "label": "≥145 = 1",
+       "points": 1.0
       }
      ]
     },
@@ -2242,9 +2344,19 @@
      "description": "Arterial bicarbonate",
      "options": [
       {
-       "value": "15",
+       "value": "<15",
+       "label": "<15 = 6",
+       "points": 6.0
+      },
+      {
+       "value": "15–19",
        "label": "15–19 = 3",
-       "points": 15.0
+       "points": 3.0
+      },
+      {
+       "value": "≥20",
+       "label": "≥20 = 0",
+       "points": 0.0
       }
      ]
     },
@@ -2255,9 +2367,19 @@
      "description": "Total bilirubin",
      "options": [
       {
-       "value": "4",
+       "value": "<4",
+       "label": "<4 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "4–5.9",
        "label": "4–5.9 = 4",
        "points": 4.0
+      },
+      {
+       "value": "≥6",
+       "label": "≥6 = 9",
+       "points": 9.0
       }
      ]
     },
@@ -2268,29 +2390,29 @@
      "description": "Glasgow Coma Scale",
      "options": [
       {
-       "value": "3",
+       "value": "3–15 → <6",
        "label": "3–15 → <6 = 26",
-       "points": 3.0
+       "points": 26.0
       },
       {
-       "value": "6",
+       "value": "6–8",
        "label": "6–8 = 13",
-       "points": 6.0
+       "points": 13.0
       },
       {
-       "value": "9",
+       "value": "9–10",
        "label": "9–10 = 7",
-       "points": 9.0
+       "points": 7.0
       },
       {
-       "value": "11",
+       "value": "11–13",
        "label": "11–13 = 5",
-       "points": 11.0
+       "points": 5.0
       },
       {
-       "value": "14",
+       "value": "14–15",
        "label": "14–15 = 0",
-       "points": 14.0
+       "points": 0.0
       }
      ]
     },
@@ -2471,24 +2593,74 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "respiratory-pao-fio",
      "label": "Respiratory: PaO₂/FiO₂",
      "type": "select",
      "description": "Ratio of arterial oxygen to inspired oxygen fraction",
-     "options_text": "≥400 = 0; <400 = 1; <300 = 2; <200 (on vasopressors) = 3; <100 (on vasopressors) = 4",
-     "points_text": "0–4"
+     "options": [
+      {
+       "value": "≥400",
+       "label": "≥400 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<400",
+       "label": "<400 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "<300",
+       "label": "<300 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "<200 (on vasopressors)",
+       "label": "<200 (on vasopressors) = 3",
+       "points": 3.0
+      },
+      {
+       "value": "<100 (on vasopressors)",
+       "label": "<100 (on vasopressors) = 4",
+       "points": 4.0
+      }
+     ]
     },
     {
      "key": "coagulation-platelets-10-l",
      "label": "Coagulation: Platelets (×10³/µL)",
      "type": "select",
      "description": "Platelet count",
-     "options_text": "≥150 = 0; <150 = 1; <100 = 2; <50 = 3; <20 = 4",
-     "points_text": "0–4"
+     "options": [
+      {
+       "value": "≥150",
+       "label": "≥150 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<150",
+       "label": "<150 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "<100",
+       "label": "<100 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "<50",
+       "label": "<50 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "<20",
+       "label": "<20 = 4",
+       "points": 4.0
+      }
+     ]
     },
     {
      "key": "liver-bilirubin-mg-dl",
@@ -2497,19 +2669,29 @@
      "description": "Total serum bilirubin",
      "options": [
       {
-       "value": "1.2",
-       "label": "1.2–1.9 = 1",
-       "points": 1.2
+       "value": "<1.2",
+       "label": "<1.2 = 0",
+       "points": 0.0
       },
       {
-       "value": "2.0",
+       "value": "1.2–1.9",
+       "label": "1.2–1.9 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "2.0–5.9",
        "label": "2.0–5.9 = 2",
        "points": 2.0
       },
       {
-       "value": "6.0",
+       "value": "6.0–11.9",
        "label": "6.0–11.9 = 3",
-       "points": 6.0
+       "points": 3.0
+      },
+      {
+       "value": "≥12.0",
+       "label": "≥12.0 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -2518,8 +2700,33 @@
      "label": "Cardiovascular: MAP and vasopressors",
      "type": "select",
      "description": "Mean arterial pressure and dose of vasopressors (µg/kg/min)",
-     "options_text": "MAP ≥70 = 0; MAP <70 = 1; dopamine ≤5 or dobutamine = 2; dopamine 5–15 or norepinephrine ≤0.1 = 3; dopamine >15 or norepinephrine >0.1 or epinephrine ≤0.1 = 4",
-     "points_text": "0–4"
+     "options": [
+      {
+       "value": "MAP ≥70",
+       "label": "MAP ≥70 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "MAP <70",
+       "label": "MAP <70 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "dopamine ≤5 or dobutamine",
+       "label": "dopamine ≤5 or dobutamine = 2",
+       "points": 2.0
+      },
+      {
+       "value": "dopamine 5–15 or norepinephrine ≤0.1",
+       "label": "dopamine 5–15 or norepinephrine ≤0.1 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "dopamine >15 or norepinephrine >0.1 or epinephrine ≤0.1",
+       "label": "dopamine >15 or norepinephrine >0.1 or epinephrine ≤0.1 = 4",
+       "points": 4.0
+      }
+     ]
     },
     {
      "key": "cns-gcs",
@@ -2530,22 +2737,27 @@
       {
        "value": "15",
        "label": "15 = 0",
-       "points": 15.0
+       "points": 0.0
       },
       {
-       "value": "13",
+       "value": "13–14",
        "label": "13–14 = 1",
-       "points": 13.0
+       "points": 1.0
       },
       {
-       "value": "10",
+       "value": "10–12",
        "label": "10–12 = 2",
-       "points": 10.0
+       "points": 2.0
       },
       {
-       "value": "6",
+       "value": "6–9",
        "label": "6–9 = 3",
-       "points": 6.0
+       "points": 3.0
+      },
+      {
+       "value": "<6",
+       "label": "<6 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -2556,19 +2768,29 @@
      "description": "Serum creatinine or 24-hour urine output",
      "options": [
       {
-       "value": "1.2",
-       "label": "1.2–1.9 = 1",
-       "points": 1.2
+       "value": "Cr <1.2",
+       "label": "Cr <1.2 = 0",
+       "points": 0.0
       },
       {
-       "value": "2.0",
+       "value": "1.2–1.9",
+       "label": "1.2–1.9 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "2.0–3.4",
        "label": "2.0–3.4 = 2",
        "points": 2.0
       },
       {
-       "value": "3.5",
+       "value": "3.5–4.9 or UO <500 mL/day",
        "label": "3.5–4.9 or UO <500 mL/day = 3",
-       "points": 3.5
+       "points": 3.0
+      },
+      {
+       "value": "≥5.0 or UO <200 mL/day",
+       "label": "≥5.0 or UO <200 mL/day = 4",
+       "points": 4.0
       }
      ]
     }
@@ -2616,7 +2838,8 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Requires laboratory values (not instant). Cardiovascular subscore has changed definitions over time (vasopressor types/doses). GCS is subjective. Originally designed for sepsis but applied broadly. Sequential assessment more informative than single value."
+   "limitations": "Requires laboratory values (not instant). Cardiovascular subscore has changed definitions over time (vasopressor types/doses). GCS is subjective. Originally designed for sepsis but applied broadly. Sequential assessment more informative than single value.",
+   "score_max_computed": 24.0
   },
   {
    "id": "MSC-0037",
@@ -3610,30 +3833,39 @@
      "description": "Glasgow Coma Scale at presentation",
      "options": [
       {
-       "value": "3",
+       "value": "3–4",
        "label": "3–4 = 2",
-       "points": 3.0
+       "points": 2.0
       },
       {
-       "value": "5",
+       "value": "5–12",
        "label": "5–12 = 1",
-       "points": 5.0
+       "points": 1.0
       },
       {
-       "value": "13",
+       "value": "13–15",
        "label": "13–15 = 0",
-       "points": 13.0
+       "points": 0.0
       }
      ]
     },
     {
      "key": "ich-volume",
      "label": "ICH volume",
-     "type": "text",
+     "type": "select",
      "description": "Hemorrhage volume on initial CT (ABC/2 method)",
-     "unit": "mL",
-     "options_text": "≥30 mL = 1; <30 mL = 0",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "≥30 mL",
+       "label": "≥30 mL = 1",
+       "points": 1.0
+      },
+      {
+       "value": "<30 mL",
+       "label": "<30 mL = 0",
+       "points": 0.0
+      }
+     ]
     },
     {
      "key": "intraventricular-hemorrhage",
@@ -3811,311 +4043,98 @@
      "label": "1b. LOC questions",
      "type": "select",
      "description": "Asks patient month and age",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = both correct",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = one correct",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = neither correct",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = both correct; 1 = one correct; 2 = neither correct",
+     "points_text": "0–2"
     },
     {
      "key": "1c-loc-commands",
      "label": "1c. LOC commands",
      "type": "select",
      "description": "Open/close eyes, grip/release",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = both correct",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = one correct",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = neither correct",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = both correct; 1 = one correct; 2 = neither correct",
+     "points_text": "0–2"
     },
     {
      "key": "2-best-gaze",
      "label": "2. Best gaze",
      "type": "select",
      "description": "Horizontal eye movements",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = partial gaze palsy",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = forced deviation",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = partial gaze palsy; 2 = forced deviation",
+     "points_text": "0–2"
     },
     {
      "key": "3-visual-fields",
      "label": "3. Visual fields",
      "type": "select",
      "description": "Visual field testing by confrontation",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no loss",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = partial hemianopia",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = complete hemianopia",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = bilateral hemianopia",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = no loss; 1 = partial hemianopia; 2 = complete hemianopia; 3 = bilateral hemianopia",
+     "points_text": "0–3"
     },
     {
      "key": "4-facial-palsy",
      "label": "4. Facial palsy",
      "type": "select",
      "description": "Facial nerve function",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = minor",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = partial",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = complete",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = minor; 2 = partial; 3 = complete",
+     "points_text": "0–3"
     },
     {
      "key": "5a-5b-motor-arm-l-r",
      "label": "5a/5b. Motor arm (L/R)",
-     "type": "select",
+     "type": "text",
      "description": "Arm drift (10 seconds if arms outstretched, 5 seconds if legs)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no drift",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = drift before 5s",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = some effort against gravity",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = no effort against gravity",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = no movement",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = no drift; 1 = drift before 5s; 2 = some effort against gravity; 3 = no effort against gravity; 4 = no movement; UN = amputation/joint fusion",
+     "points_text": "0–4 each arm"
     },
     {
      "key": "6a-6b-motor-leg-l-r",
      "label": "6a/6b. Motor leg (L/R)",
-     "type": "select",
+     "type": "text",
      "description": "Leg drift (5 seconds)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no drift",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = drift before 5s",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = some effort against gravity",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = no effort against gravity",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = no movement",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = no drift; 1 = drift before 5s; 2 = some effort against gravity; 3 = no effort against gravity; 4 = no movement; UN = amputation/joint fusion",
+     "points_text": "0–4 each leg"
     },
     {
      "key": "7-limb-ataxia",
      "label": "7. Limb ataxia",
      "type": "select",
      "description": "Finger-nose-finger and heel-shin testing",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = absent",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = present in one limb",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = present in two limbs",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = absent; 1 = present in one limb; 2 = present in two limbs",
+     "points_text": "0–2"
     },
     {
      "key": "8-sensory",
      "label": "8. Sensory",
      "type": "select",
      "description": "Pin-prick sensation face/arm/leg",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild-moderate loss",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe-total loss",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = mild-moderate loss; 2 = severe-total loss",
+     "points_text": "0–2"
     },
     {
      "key": "9-best-language",
      "label": "9. Best language",
      "type": "select",
      "description": "Describes picture, names items, reads sentences",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no aphasia",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild-moderate",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = mute/global aphasia",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = no aphasia; 1 = mild-moderate; 2 = severe; 3 = mute/global aphasia",
+     "points_text": "0–3"
     },
     {
      "key": "10-dysarthria",
      "label": "10. Dysarthria",
      "type": "select",
      "description": "Speech clarity",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild-moderate",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe/anarthric",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = mild-moderate; 2 = severe/anarthric; UN = intubated/physical barrier",
+     "points_text": "0–2"
     },
     {
      "key": "11-extinction-inattention",
      "label": "11. Extinction/inattention",
      "type": "select",
      "description": "Simultaneous bilateral stimulation",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no abnormality",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = partial (one modality)",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = complete (two modalities)",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = no abnormality; 1 = partial (one modality); 2 = complete (two modalities)",
+     "points_text": "0–2"
     }
    ],
    "bands": [
@@ -5041,19 +5060,29 @@
      "description": "Percentage of blasts in bone marrow aspirate",
      "options": [
       {
-       "value": "3",
+       "value": "≤2%",
+       "label": "≤2% = 0",
+       "points": 0.0
+      },
+      {
+       "value": "3–5%",
        "label": "3–5% = 1",
+       "points": 1.0
+      },
+      {
+       "value": "6–10%",
+       "label": "6–10% = 2",
+       "points": 2.0
+      },
+      {
+       "value": "11–20%",
+       "label": "11–20% = 3",
        "points": 3.0
       },
       {
-       "value": "6",
-       "label": "6–10% = 2",
-       "points": 6.0
-      },
-      {
-       "value": "11",
-       "label": "11–20% = 3",
-       "points": 11.0
+       "value": ">20%",
+       "label": ">20% = 4",
+       "points": 4.0
       }
      ]
     },
@@ -5064,9 +5093,19 @@
      "description": "Hemoglobin level (g/dL)",
      "options": [
       {
-       "value": "8",
+       "value": "≥10",
+       "label": "≥10 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "8–9.9",
        "label": "8–9.9 = 1",
-       "points": 8.0
+       "points": 1.0
+      },
+      {
+       "value": "<8",
+       "label": "<8 = 1.5",
+       "points": 1.5
       }
      ]
     },
@@ -5077,20 +5116,39 @@
      "description": "Platelet count (×10⁹/L)",
      "options": [
       {
-       "value": "50",
+       "value": "≥100",
+       "label": "≥100 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "50–99",
        "label": "50–99 = 0.5",
-       "points": 50.0
+       "points": 0.5
+      },
+      {
+       "value": "<50",
+       "label": "<50 = 1",
+       "points": 1.0
       }
      ]
     },
     {
      "key": "anc-absolute-neutrophil-count",
      "label": "ANC (absolute neutrophil count)",
-     "type": "text",
+     "type": "select",
      "description": "ANC (×10⁹/L)",
-     "unit": "×10⁹/L",
-     "options_text": "≥0.8 = 0; <0.8 = 0.5",
-     "points_text": "0–0.5"
+     "options": [
+      {
+       "value": "≥0.8",
+       "label": "≥0.8 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<0.8",
+       "label": "<0.8 = 0.5",
+       "points": 0.5
+      }
+     ]
     }
    ],
    "bands": [
@@ -6182,21 +6240,17 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "ready",
-   "engine": "points-sum",
+   "status": "reference",
+   "engine": "reference",
    "inputs": [
     {
      "key": "10-items-about-feelings-in-the-past-7-days",
      "label": "10 items about feelings in the past 7 days",
-     "type": "select",
+     "type": "text",
      "description": "Each item scored 0–3 based on frequency. Items: able to laugh, enjoyment, self-blame, anxiety/worry, fear/panic, things getting on top, difficulty sleeping (sadness), feeling sad/miserable, crying, self-harm thoughts",
-     "options": [
-      {
-       "value": "0",
-       "label": "0=No, not at all to 3=Yes, most of the time (for most items",
-       "points": 0.0
-      }
-     ]
+     "unit": "ordinal",
+     "options_text": "0=No, not at all to 3=Yes, most of the time (for most items; some items reversed)",
+     "points_text": "0–3 per item"
     }
    ],
    "bands": [
@@ -6234,8 +6288,7 @@
    ],
    "confidence": "high",
    "copyright": "free for clinical use — published academic tool by Cox JL",
-   "limitations": "Screening tool, not diagnostic — positive screen requires clinical interview. Self-reported — may underreport symptoms due to stigma, fear of judgment, or normalization of symptoms. May miss atypical presentations of postpartum depression (anger, irritability, bonding difficulties). Somatic items excluded by design — but may miss depression primarily presenting with somatic symptoms. Threshold score debated (10, 11, 12, or 13 used in different studies). Doesn't distinguish postpartum depression from postpartum psychosis or anxiety disorders. Cultural variation in symptom expression. Not validated in antenatal populations (though used antenatally in practice). Doesn't assess social support, history of mental illness, or psychosocial risk factors.",
-   "score_max_computed": 0.0
+   "limitations": "Screening tool, not diagnostic — positive screen requires clinical interview. Self-reported — may underreport symptoms due to stigma, fear of judgment, or normalization of symptoms. May miss atypical presentations of postpartum depression (anger, irritability, bonding difficulties). Somatic items excluded by design — but may miss depression primarily presenting with somatic symptoms. Threshold score debated (10, 11, 12, or 13 used in different studies). Doesn't distinguish postpartum depression from postpartum psychosis or anxiety disorders. Cultural variation in symptom expression. Not validated in antenatal populations (though used antenatally in practice). Doesn't assess social support, history of mental illness, or psychosocial risk factors."
   },
   {
    "id": "MSC-0092",
@@ -7219,100 +7272,44 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "ready",
-   "engine": "points-sum",
+   "status": "reference",
+   "engine": "reference",
    "inputs": [
     {
      "key": "thrombocytopenia",
      "label": "Thrombocytopenia",
-     "type": "select",
+     "type": "text",
      "description": "Degree of platelet count fall from baseline",
-     "options": [
-      {
-       "value": "2",
-       "label": "2 = >50% fall AND nadir ≥20K",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = 30–50% fall or nadir 10–19K",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = <30% fall or nadir <10K",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "2 = >50% fall AND nadir ≥20K; 1 = 30–50% fall or nadir 10–19K; 0 = <30% fall or nadir <10K",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "timing-of-platelet-fall",
      "label": "Timing of platelet fall",
-     "type": "select",
+     "type": "text",
      "description": "Timing of platelet fall relative to heparin exposure",
-     "options": [
-      {
-       "value": "2",
-       "label": "2 = Days 5–10 onset (or ≤1 day if recent heparin in past 30 days)",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = Day 5–10 (unclear) or >10 days",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = ≤4 days without recent exposure",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "2 = Days 5–10 onset (or ≤1 day if recent heparin in past 30 days); 1 = Day 5–10 (unclear) or >10 days; 0 = ≤4 days without recent exposure",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "thrombosis-or-other-sequelae",
      "label": "Thrombosis or other sequelae",
-     "type": "select",
+     "type": "text",
      "description": "New thrombosis, skin necrosis, or acute systemic reaction after IV heparin bolus",
-     "options": [
-      {
-       "value": "2",
-       "label": "2 = new confirmed thrombosis or skin necrosis or acute systemic reaction",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = progressive/recurrent thrombosis or suspected thrombosis",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "2 = new confirmed thrombosis or skin necrosis or acute systemic reaction; 1 = progressive/recurrent thrombosis or suspected thrombosis; 0 = none",
+     "points_text": "0, 1, or 2"
     },
     {
      "key": "other-causes-of-thrombocytopenia",
      "label": "Other causes of thrombocytopenia",
-     "type": "select",
+     "type": "text",
      "description": "Presence of other explanations for platelet fall",
-     "options": [
-      {
-       "value": "2",
-       "label": "2 = no other cause evident",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = possible other cause",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = definite other cause present",
-       "points": 0.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "2 = no other cause evident; 1 = possible other cause; 0 = definite other cause present",
+     "points_text": "0, 1, or 2"
     }
    ],
    "bands": [
@@ -7346,8 +7343,7 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Scoring requires careful clinical assessment (timing, alternative causes). Intermediate score (4–5) requires lab testing. Low scores do not completely exclude HIT (5% false negative). Not applicable to patients on heparin flushes only. Inter-rater variability possible. HIT antibody testing has high sensitivity but low specificity.",
-   "score_max_computed": 8.0
+   "limitations": "Scoring requires careful clinical assessment (timing, alternative causes). Intermediate score (4–5) requires lab testing. Low scores do not completely exclude HIT (5% false negative). Not applicable to patients on heparin flushes only. Inter-rater variability possible. HIT antibody testing has high sensitivity but low specificity."
   },
   {
    "id": "MSC-0105",
@@ -8200,41 +8196,17 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "ready",
-   "engine": "points-sum",
+   "status": "reference",
+   "engine": "reference",
    "inputs": [
     {
      "key": "dyspnea-grade",
      "label": "Dyspnea grade",
-     "type": "select",
+     "type": "text",
      "description": "Breathlessness level based on activities that provoke dyspnea",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = breathless only with strenuous exercise",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = short of breath hurrying on level ground or walking up a slight hill",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = walks slower than people of same age due to breathlessness or stops for breath when wa",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = stops for breath after walking 100 yards or after a few minutes on level ground",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = too breathless to leave house or breathless when dressing/undressing",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = breathless only with strenuous exercise; 1 = short of breath hurrying on level ground or walking up a slight hill; 2 = walks slower than people of same age due to breathlessness or stops for breath when walking at own pace; 3 = stops for breath after walking 100 yards or after a few minutes on level ground; 4 = too breathless to leave house or breathless when dressing/undressing",
+     "points_text": "single grade 0–4"
     }
    ],
    "bands": [
@@ -8264,8 +8236,7 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Very simple single-item scale — may miss nuanced symptom differences. Threshold of ≥2 for 'more symptomatic' is arbitrary and doesn't capture all clinically significant breathlessness. CAT ≥10 is more sensitive. Patient-reported and subjective. Doesn't capture daily variability in symptoms.",
-   "score_max_computed": 4.0
+   "limitations": "Very simple single-item scale — may miss nuanced symptom differences. Threshold of ≥2 for 'more symptomatic' is arbitrary and doesn't capture all clinically significant breathlessness. CAT ≥10 is more sensitive. Patient-reported and subjective. Doesn't capture daily variability in symptoms."
   },
   {
    "id": "MSC-0120",
@@ -9617,25 +9588,11 @@
     {
      "key": "angina-index",
      "label": "Angina index",
-     "type": "select",
+     "type": "text",
      "description": "Angina during test",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no angina",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = non-limiting angina",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = exercise-limiting angina",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = no angina; 1 = non-limiting angina; 2 = exercise-limiting angina",
+     "points_text": "×1 (subtracted)"
     }
    ],
    "bands": [
@@ -10246,8 +10203,8 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "systolic-bp",
@@ -10256,19 +10213,29 @@
      "description": "Systolic blood pressure",
      "options": [
       {
-       "value": "71",
+       "value": "≤70",
+       "label": "≤70 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "71–80",
        "label": "71–80 = 2",
-       "points": 71.0
+       "points": 2.0
       },
       {
-       "value": "81",
+       "value": "81–100",
        "label": "81–100 = 1",
-       "points": 81.0
+       "points": 1.0
       },
       {
-       "value": "101",
+       "value": "101–199",
        "label": "101–199 = 0",
-       "points": 101.0
+       "points": 0.0
+      },
+      {
+       "value": "≥200",
+       "label": "≥200 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -10279,24 +10246,34 @@
      "description": "Heart rate",
      "options": [
       {
-       "value": "41",
+       "value": "≤40",
+       "label": "≤40 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "41–50",
        "label": "41–50 = 1",
-       "points": 41.0
+       "points": 1.0
       },
       {
-       "value": "51",
+       "value": "51–100",
        "label": "51–100 = 0",
-       "points": 51.0
+       "points": 0.0
       },
       {
-       "value": "101",
+       "value": "101–110",
        "label": "101–110 = 1",
-       "points": 101.0
+       "points": 1.0
       },
       {
-       "value": "111",
+       "value": "111–129",
        "label": "111–129 = 2",
-       "points": 111.0
+       "points": 2.0
+      },
+      {
+       "value": "≥130",
+       "label": "≥130 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -10307,19 +10284,29 @@
      "description": "Respiratory rate",
      "options": [
       {
-       "value": "9",
+       "value": "≤8",
+       "label": "≤8 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "9–14",
        "label": "9–14 = 0",
-       "points": 9.0
+       "points": 0.0
       },
       {
-       "value": "15",
+       "value": "15–20",
        "label": "15–20 = 1",
-       "points": 15.0
+       "points": 1.0
       },
       {
-       "value": "21",
+       "value": "21–29",
        "label": "21–29 = 2",
-       "points": 21.0
+       "points": 2.0
+      },
+      {
+       "value": "≥30",
+       "label": "≥30 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -10330,9 +10317,19 @@
      "description": "Core temperature",
      "options": [
       {
-       "value": "35",
+       "value": "<35",
+       "label": "<35 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "35–38.4",
        "label": "35–38.4 = 0",
-       "points": 35.0
+       "points": 0.0
+      },
+      {
+       "value": "≥38.5",
+       "label": "≥38.5 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -10341,8 +10338,28 @@
      "label": "AVPU score",
      "type": "select",
      "description": "Alert, Voice, Pain, Unresponsive",
-     "options_text": "A = 0; V = 1; P = 2; U = 3",
-     "points_text": "0–3"
+     "options": [
+      {
+       "value": "A",
+       "label": "A = 0",
+       "points": 0.0
+      },
+      {
+       "value": "V",
+       "label": "V = 1",
+       "points": 1.0
+      },
+      {
+       "value": "P",
+       "label": "P = 2",
+       "points": 2.0
+      },
+      {
+       "value": "U",
+       "label": "U = 3",
+       "points": 3.0
+      }
+     ]
     }
    ],
    "bands": [
@@ -10376,7 +10393,8 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "AVPU is less granular than GCS. Does not capture oxygen saturation or supplemental oxygen. Subjective components. Various versions exist with slightly different cutoffs (non-standardized). Sensitivity varies by patient population."
+   "limitations": "AVPU is less granular than GCS. Does not capture oxygen saturation or supplemental oxygen. Subjective components. Various versions exist with slightly different cutoffs (non-standardized). Sensitivity varies by patient population.",
+   "score_max_computed": 14.0
   },
   {
    "id": "MSC-0156",
@@ -10500,8 +10518,8 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "vomiting",
@@ -10524,8 +10542,23 @@
      "label": "Rebound tenderness / muscular defense",
      "type": "select",
      "description": "Peritoneal irritation signs",
-     "options_text": "None = 0; Light = 1; Strong = 2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "None",
+       "label": "None = 0",
+       "points": 0.0
+      },
+      {
+       "value": "Light",
+       "label": "Light = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Strong",
+       "label": "Strong = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "temperature-38-5-c",
@@ -10542,9 +10575,19 @@
      "description": "White blood cell count",
      "options": [
       {
-       "value": "10",
+       "value": "<10",
+       "label": "<10 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "10–14.9",
        "label": "10–14.9 = 1",
-       "points": 10.0
+       "points": 1.0
+      },
+      {
+       "value": "≥15",
+       "label": "≥15 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -10555,9 +10598,19 @@
      "description": "C-reactive protein (mg/L)",
      "options": [
       {
-       "value": "10",
+       "value": "<10",
+       "label": "<10 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "10–49",
        "label": "10–49 = 1",
-       "points": 10.0
+       "points": 1.0
+      },
+      {
+       "value": "≥50",
+       "label": "≥50 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -10568,9 +10621,19 @@
      "description": "% segmented neutrophils on differential",
      "options": [
       {
-       "value": "70",
+       "value": "<70",
+       "label": "<70 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "70–84",
        "label": "70–84 = 1",
-       "points": 70.0
+       "points": 1.0
+      },
+      {
+       "value": "≥85",
+       "label": "≥85 = 2",
+       "points": 2.0
       }
      ]
     }
@@ -10606,7 +10669,8 @@
    ],
    "confidence": "medium",
    "copyright": "public domain",
-   "limitations": "Requires CRP (not always immediately available in all EDs). More complex than Alvarado. Needs external validation in diverse populations. Cutoff values for neutrophils may vary. Less studied in children and elderly."
+   "limitations": "Requires CRP (not always immediately available in all EDs). More complex than Alvarado. Needs external validation in diverse populations. Cutoff values for neutrophils may vary. Less studied in children and elderly.",
+   "score_max_computed": 11.0
   },
   {
    "id": "MSC-0161",
@@ -11203,53 +11267,98 @@
     ],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "age",
      "label": "Age",
-     "type": "text",
+     "type": "select",
      "description": "Age in years",
-     "unit": "years",
-     "options_text": "<50 = 1; ≥50 = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "<50",
+       "label": "<50 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥50",
+       "label": "≥50 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "wbc-count",
      "label": "WBC count",
-     "type": "text",
+     "type": "select",
      "description": "White blood cell count (×10⁹/L)",
-     "unit": "×10⁹/L",
-     "options_text": "<15 = 1; ≥15 = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "<15",
+       "label": "<15 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥15",
+       "label": "≥15 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "urea-bun-equivalent",
      "label": "Urea (BUN equivalent)",
-     "type": "text",
+     "type": "select",
      "description": "Blood urea (mmol/L)",
-     "unit": "mmol/L",
-     "options_text": "<5 = 1; ≥5 = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "<5",
+       "label": "<5 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥5",
+       "label": "≥5 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "pt-ratio-inr",
      "label": "PT ratio (INR)",
-     "type": "text",
+     "type": "select",
      "description": "Prothrombin time ratio",
-     "unit": "ratio",
-     "options_text": "<1.5 = 1; ≥1.5 = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "<1.5",
+       "label": "<1.5 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥1.5",
+       "label": "≥1.5 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "bilirubin",
      "label": "Bilirubin",
-     "type": "text",
+     "type": "select",
      "description": "Total serum bilirubin (µmol/L)",
-     "unit": "µmol/L",
-     "options_text": "<125 = 1; ≥125 = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "<125",
+       "label": "<125 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥125",
+       "label": "≥125 = 2",
+       "points": 2.0
+      }
+     ]
     }
    ],
    "bands": [
@@ -11279,7 +11388,8 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "Derived in predominantly White Scottish population. Cutoff values (urea 5 mmol/L) may need adjustment for different populations. Bilirubin cutoff in µmol/L may confuse US clinicians (125 µmol/L ≈ 7.3 mg/dL). Not as widely adopted as MDF in US guidelines."
+   "limitations": "Derived in predominantly White Scottish population. Cutoff values (urea 5 mmol/L) may need adjustment for different populations. Bilirubin cutoff in µmol/L may confuse US clinicians (125 µmol/L ≈ 7.3 mg/dL). Not as widely adopted as MDF in US guidelines.",
+   "score_max_computed": 10.0
   },
   {
    "id": "MSC-0173",
@@ -11728,19 +11838,29 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "45",
+       "value": "<45",
+       "label": "<45 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "45–54",
        "label": "45–54 = 2",
-       "points": 45.0
+       "points": 2.0
       },
       {
-       "value": "55",
+       "value": "55–64",
        "label": "55–64 = 3",
-       "points": 55.0
+       "points": 3.0
       },
       {
-       "value": "65",
+       "value": "65–74",
        "label": "65–74 = 4",
-       "points": 65.0
+       "points": 4.0
+      },
+      {
+       "value": "≥75",
+       "label": "≥75 = 5",
+       "points": 5.0
       }
      ]
     },
@@ -11751,14 +11871,24 @@
      "description": "Body mass index",
      "options": [
       {
-       "value": "25",
-       "label": "25–30 = 1",
-       "points": 25.0
+       "value": "<25",
+       "label": "<25 = 0",
+       "points": 0.0
       },
       {
-       "value": "30",
+       "value": "25–30",
+       "label": "25–30 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "30–35",
        "label": "30–35 = 2",
-       "points": 30.0
+       "points": 2.0
+      },
+      {
+       "value": "≥35",
+       "label": "≥35 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -11769,14 +11899,29 @@
      "description": "Waist measurement",
      "options": [
       {
-       "value": "94",
-       "label": "94–102 = 3",
-       "points": 94.0
+       "value": "Male: <94",
+       "label": "Male: <94 = 0",
+       "points": 0.0
       },
       {
-       "value": "80",
+       "value": "94–102",
+       "label": "94–102 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "≥102 = 4. Female: <80",
+       "label": "≥102 = 4. Female: <80 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "80–88",
        "label": "80–88 = 3",
-       "points": 80.0
+       "points": 3.0
+      },
+      {
+       "value": "≥88",
+       "label": "≥88 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -11977,8 +12122,8 @@
     ],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "age-60",
@@ -12001,8 +12146,23 @@
      "label": "Clinical features",
      "type": "select",
      "description": "Unilateral weakness or speech disturbance",
-     "options_text": "Unilateral weakness = 2; Speech disturbance without weakness = 1; Other = 0",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "Unilateral weakness",
+       "label": "Unilateral weakness = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Speech disturbance without weakness",
+       "label": "Speech disturbance without weakness = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Other",
+       "label": "Other = 0",
+       "points": 0.0
+      }
+     ]
     },
     {
      "key": "duration",
@@ -12011,9 +12171,19 @@
      "description": "Duration of TIA symptoms",
      "options": [
       {
-       "value": "10",
+       "value": "≥60 min",
+       "label": "≥60 min = 2",
+       "points": 2.0
+      },
+      {
+       "value": "10–59 min",
        "label": "10–59 min = 1",
-       "points": 10.0
+       "points": 1.0
+      },
+      {
+       "value": "<10 min",
+       "label": "<10 min = 0",
+       "points": 0.0
       }
      ]
     },
@@ -12057,7 +12227,8 @@
    ],
    "confidence": "high",
    "copyright": "public domain",
-   "limitations": "May underestimate risk in patients with atrial fibrillation, carotid stenosis, or DWI-positive MRI lesions. Does not incorporate imaging findings (DWI, vessel occlusion). The original ABCD² may be superseded by ABCD²I (includes imaging). Clinical feature category requires accurate history (may be unreliable in amnestic TIA). Cut-off values are somewhat arbitrary."
+   "limitations": "May underestimate risk in patients with atrial fibrillation, carotid stenosis, or DWI-positive MRI lesions. Does not incorporate imaging findings (DWI, vessel occlusion). The original ABCD² may be superseded by ABCD²I (includes imaging). Clinical feature category requires accurate history (may be unreliable in amnestic TIA). Cut-off values are somewhat arbitrary.",
+   "score_max_computed": 7.0
   },
   {
    "id": "MSC-0187",
@@ -12904,31 +13075,6 @@
    "score_max_computed": 5.0
   },
   {
-   "id": "MSC-0205",
-   "name": "Framingham? no",
-   "category": "Oncology",
-   "tier": 2,
-   "purpose": "skip",
-   "formula_human": "",
-   "flags": "EMPTY JUNK",
-   "provenance": {
-    "catalog_rows": [
-     205
-    ],
-    "encyclopedia_ids": [],
-    "corrections_refs": [],
-    "cognitive_dossier_items": []
-   },
-   "status": "reference",
-   "engine": "reference",
-   "inputs": [],
-   "bands": [],
-   "citations": [],
-   "links": [],
-   "confidence": "medium",
-   "copyright": "verify original instrument terms"
-  },
-  {
    "id": "MSC-0206",
    "name": "HCC: Hong Kong Liver Cancer (HKLC)",
    "category": "Oncology",
@@ -13048,26 +13194,49 @@
     "corrections_refs": [],
     "cognitive_dossier_items": []
    },
-   "status": "reference",
-   "engine": "reference",
+   "status": "ready",
+   "engine": "points-sum",
    "inputs": [
     {
      "key": "risk-tier-baseline-vulnerability",
      "label": "Risk tier (baseline vulnerability)",
-     "type": "text",
+     "type": "select",
      "description": "Patient's baseline risk: standard ICU, high-risk ICU, or bone marrow transplant/CPR",
-     "unit": "categorical",
-     "options_text": "Standard ICU = 1; High-risk ICU = 2; BMT/CPR = 3",
-     "points_text": "1, 2, or 3"
+     "options": [
+      {
+       "value": "Standard ICU",
+       "label": "Standard ICU = 1",
+       "points": 1.0
+      },
+      {
+       "value": "High-risk ICU",
+       "label": "High-risk ICU = 2",
+       "points": 2.0
+      },
+      {
+       "value": "BMT/CPR",
+       "label": "BMT/CPR = 3",
+       "points": 3.0
+      }
+     ]
     },
     {
      "key": "injury-signal-creatinine-change-or-fluid-overload",
      "label": "Injury signal (creatinine change or fluid overload)",
-     "type": "text",
+     "type": "select",
      "description": "Creatinine rise from baseline or fluid overload percentage",
-     "unit": "categorical",
-     "options_text": "Creatinine ≥1.5× or FO 10–15% = 1; Creatinine ≥2× or FO ≥15% = 2",
-     "points_text": "1 or 2"
+     "options": [
+      {
+       "value": "Creatinine ≥1.5× or FO 10–15%",
+       "label": "Creatinine ≥1.5× or FO 10–15% = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Creatinine ≥2× or FO ≥15%",
+       "label": "Creatinine ≥2× or FO ≥15% = 2",
+       "points": 2.0
+      }
+     ]
     }
    ],
    "bands": [
@@ -13097,7 +13266,8 @@
    ],
    "confidence": "medium",
    "copyright": "public domain",
-   "limitations": "Developed for pediatric ICU populations only. Thresholds for RAI fulfillment debated. Requires accurate fluid balance tracking. Not validated in adults. Injury signal definitions may vary by study. Requires baseline creatinine or estimated value."
+   "limitations": "Developed for pediatric ICU populations only. Thresholds for RAI fulfillment debated. Requires accurate fluid balance tracking. Not validated in adults. Injury signal definitions may vary by study. Requires baseline creatinine or estimated value.",
+   "score_max_computed": 5.0
   },
   {
    "id": "MSC-0211",
@@ -14081,11 +14251,20 @@
     {
      "key": "bmi",
      "label": "BMI",
-     "type": "text",
+     "type": "select",
      "description": "Body mass index (kg/m²)",
-     "unit": "kg/m²",
-     "options_text": ">21 = 0; ≤21 = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": ">21",
+       "label": ">21 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≤21",
+       "label": "≤21 = 1",
+       "points": 1.0
+      }
+     ]
     },
     {
      "key": "fev-predicted-post-bronchodilator",
@@ -14094,14 +14273,24 @@
      "description": "Forced expiratory volume in 1 second as percent predicted",
      "options": [
       {
-       "value": "50",
-       "label": "50–64% = 1",
-       "points": 50.0
+       "value": "≥65%",
+       "label": "≥65% = 0",
+       "points": 0.0
       },
       {
-       "value": "36",
+       "value": "50–64%",
+       "label": "50–64% = 1",
+       "points": 1.0
+      },
+      {
+       "value": "36–49%",
        "label": "36–49% = 2",
-       "points": 36.0
+       "points": 2.0
+      },
+      {
+       "value": "≤35%",
+       "label": "≤35% = 3",
+       "points": 3.0
       }
      ]
     },
@@ -14110,33 +14299,8 @@
      "label": "MMRC Dyspnea Scale",
      "type": "select",
      "description": "Modified Medical Research Council dyspnea grade",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = breathless on hurrying",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = walks slower than peers",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = stops for breath after 100 yards",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = too breathless to leave house or breathless dressing",
-       "points": 4.0
-      }
-     ]
+     "options_text": "0 = none; 1 = breathless on hurrying; 2 = walks slower than peers; 3 = stops for breath after 100 yards; 4 = too breathless to leave house or breathless dressing",
+     "points_text": "0–4"
     },
     {
      "key": "6-minute-walk-distance",
@@ -14145,14 +14309,24 @@
      "description": "6MWD in meters",
      "options": [
       {
-       "value": "250",
-       "label": "250–349m = 1",
-       "points": 250.0
+       "value": "≥350m",
+       "label": "≥350m = 0",
+       "points": 0.0
       },
       {
-       "value": "150",
+       "value": "250–349m",
+       "label": "250–349m = 1",
+       "points": 1.0
+      },
+      {
+       "value": "150–249m",
        "label": "150–249m = 2",
-       "points": 150.0
+       "points": 2.0
+      },
+      {
+       "value": "≤149m",
+       "label": "≤149m = 3",
+       "points": 3.0
       }
      ]
     }
@@ -15321,11 +15495,20 @@
     {
      "key": "age",
      "label": "Age",
-     "type": "text",
+     "type": "select",
      "description": "Patient age",
-     "unit": "years",
-     "options_text": "<55 = 0; ≥55 = 1",
-     "points_text": "binary age variable"
+     "options": [
+      {
+       "value": "<55",
+       "label": "<55 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥55",
+       "label": "≥55 = 1",
+       "points": 1.0
+      }
+     ]
     }
    ],
    "bands": [
@@ -15807,24 +15990,29 @@
      "description": "GCS",
      "options": [
       {
-       "value": "5",
-       "label": "5–7=3",
+       "value": "GCS 3–4",
+       "label": "GCS 3–4=5",
        "points": 5.0
       },
       {
-       "value": "8",
+       "value": "5–7",
+       "label": "5–7=3",
+       "points": 3.0
+      },
+      {
+       "value": "8–10",
        "label": "8–10=2",
-       "points": 8.0
+       "points": 2.0
       },
       {
-       "value": "11",
+       "value": "11–13",
        "label": "11–13=1",
-       "points": 11.0
+       "points": 1.0
       },
       {
-       "value": "14",
+       "value": "14–15",
        "label": "14–15=0",
-       "points": 14.0
+       "points": 0.0
       }
      ]
     },
@@ -16218,31 +16406,6 @@
    "score_max_computed": 10.0
   },
   {
-   "id": "MSC-0288",
-   "name": "Toll? no",
-   "category": "Obstetrics/Gynecology",
-   "tier": 3,
-   "purpose": "skip",
-   "formula_human": "",
-   "flags": "EMPTY JUNK",
-   "provenance": {
-    "catalog_rows": [
-     288
-    ],
-    "encyclopedia_ids": [],
-    "corrections_refs": [],
-    "cognitive_dossier_items": []
-   },
-   "status": "reference",
-   "engine": "reference",
-   "inputs": [],
-   "bands": [],
-   "citations": [],
-   "links": [],
-   "confidence": "medium",
-   "copyright": "verify original instrument terms"
-  },
-  {
    "id": "MSC-0289",
    "name": "Sokal / Hasford / ELTS scores",
    "category": "Oncology",
@@ -16585,25 +16748,11 @@
     {
      "key": "treatment-intensity",
      "label": "Treatment intensity",
-     "type": "select",
+     "type": "text",
      "description": "Intensity of anti-ischemic therapy at time of angina",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = no or minimal treatment",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = standard oral therapy",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = maximal IV anti-ischemic therapy",
-       "points": 3.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = no or minimal treatment; 2 = standard oral therapy; 3 = maximal IV anti-ischemic therapy",
+     "points_text": "classification only"
     }
    ],
    "score_max_computed": null,
@@ -17124,39 +17273,20 @@
    "tier": 3,
    "purpose": "Grades symptom severity in patients with atrial fibrillation to guide treatment strategy.",
    "formula_human": "Single categorical classification based on clinician assessment:\n1 = No symptoms\n2 = Mild (no effect on daily activity)\n3 = Severe (daily activity affected)\n4 = Disabling (daily activity not possible)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "af-related-symptoms",
      "label": "AF-related symptoms",
-     "type": "select",
+     "type": "text",
      "description": "Overall symptom burden related to AF episodes",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = no symptoms",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = mild (normal daily activity not affected)",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = severe (normal daily activity affected)",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = disabling (normal daily activity not possible)",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = no symptoms; 2 = mild (normal daily activity not affected); 3 = severe (normal daily activity affected); 4 = disabling (normal daily activity not possible)",
+     "points_text": "single categorical score 1–4"
     }
    ],
-   "score_max_computed": 4.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "1",
@@ -18728,9 +18858,14 @@
      "description": "APACHE II score",
      "options": [
       {
-       "value": "0",
+       "value": "0–29",
        "label": "0–29=0",
        "points": 0.0
+      },
+      {
+       "value": "≥30",
+       "label": "≥30=6",
+       "points": 6.0
       }
      ]
     },
@@ -18741,24 +18876,24 @@
      "description": "SOFA score",
      "options": [
       {
-       "value": "0",
+       "value": "0–2",
        "label": "0–2=0",
        "points": 0.0
       },
       {
-       "value": "3",
+       "value": "3–4",
        "label": "3–4=1",
-       "points": 3.0
+       "points": 1.0
       },
       {
-       "value": "5",
+       "value": "5–7",
        "label": "5–7=2",
-       "points": 5.0
+       "points": 2.0
       },
       {
-       "value": "8",
+       "value": "8–12",
        "label": "8–12=3",
-       "points": 8.0
+       "points": 3.0
       }
      ]
     },
@@ -18769,9 +18904,14 @@
      "description": "Pre-existing comorbidities",
      "options": [
       {
-       "value": "0",
+       "value": "0–1",
        "label": "0–1=0",
        "points": 0.0
+      },
+      {
+       "value": "≥2",
+       "label": "≥2=1",
+       "points": 1.0
       }
      ]
     },
@@ -18782,9 +18922,14 @@
      "description": "Length of stay before ICU",
      "options": [
       {
-       "value": "0",
+       "value": "0–1",
        "label": "0–1=0",
        "points": 0.0
+      },
+      {
+       "value": "≥2",
+       "label": "≥2=2",
+       "points": 2.0
       }
      ]
     },
@@ -18795,9 +18940,19 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "50",
+       "value": "<50",
+       "label": "<50=0",
+       "points": 0.0
+      },
+      {
+       "value": "50–74",
        "label": "50–74=1",
-       "points": 50.0
+       "points": 1.0
+      },
+      {
+       "value": "≥75",
+       "label": "≥75=2",
+       "points": 2.0
       }
      ]
     },
@@ -18808,14 +18963,14 @@
      "description": "Interleukin-6 level",
      "options": [
       {
-       "value": "0",
+       "value": "0–400",
        "label": "0–400=0",
        "points": 0.0
       }
      ]
     }
    ],
-   "score_max_computed": 58.0,
+   "score_max_computed": 14.0,
    "bands": [
     {
      "range": "0–4",
@@ -19451,8 +19606,18 @@
      "label": "Sex",
      "type": "select",
      "description": "Male or female",
-     "options_text": "Male = 2; Female = 0",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "Male",
+       "label": "Male = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Female",
+       "label": "Female = 0",
+       "points": 0.0
+      }
+     ]
     },
     {
      "key": "known-cad-or-3-risk-factors",
@@ -19721,72 +19886,28 @@
    "tier": 3,
    "purpose": "Assesses severity of respiratory distress in infants with bronchiolitis by evaluating wheezing and retractions.",
    "formula_human": "RDAI = Wheezing_score(0–4) + Retraction_score(0–17). Different versions exist with variable numbers of retraction sites assessed.",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "wheezing",
      "label": "Wheezing",
      "type": "select",
      "description": "Wheezing score based on location and severity",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = no wheezing",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = end-expiratory",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = expiratory only",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = inspiratory and expiratory",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = audible without stethoscope",
-       "points": 4.0
-      }
-     ]
+     "options_text": "0 = no wheezing; 1 = end-expiratory; 2 = expiratory only; 3 = inspiratory and expiratory; 4 = audible without stethoscope",
+     "points_text": "0–4"
     },
     {
      "key": "retractions",
      "label": "Retractions",
-     "type": "select",
+     "type": "text",
      "description": "Chest retractions (7 locations assessed: suprasternal, supraclavicular, intercostals, subcostal, supraclavicular, lateral chest wall, scalene)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = just detectable",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = mild",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = moderate",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = severe. Max total retractions = 0–17 (or various versions)",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "Each site: 0 = none; 1 = just detectable; 2 = mild; 3 = moderate; 4 = severe. Max total retractions = 0–17 (or various versions)",
+     "points_text": "0–4 per site"
     }
    ],
-   "score_max_computed": 8.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–5",
@@ -19833,131 +19954,53 @@
    "tier": 3,
    "purpose": "Quantifies severity of croup (laryngotracheobronchitis) in children to guide treatment decisions (e.g., racemic epinephrine, steroids).",
    "formula_human": "Westley = Stridor(0–3) + Retractions(0–3) + Air_entry(0–2) + Cyanosis(0/3/4) + LOC(0/5)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "stridor-at-rest",
      "label": "Stridor at rest",
      "type": "select",
      "description": "Presence and character of stridor",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = when agitated",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = intermittent at rest",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = continuous at rest",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = none; 1 = when agitated; 2 = intermittent at rest; 3 = continuous at rest",
+     "points_text": "0–3"
     },
     {
      "key": "retractions",
      "label": "Retractions",
      "type": "select",
      "description": "Chest wall retractions",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = moderate",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = severe (with nasal flaring)",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = none; 1 = mild; 2 = moderate; 3 = severe (with nasal flaring)",
+     "points_text": "0–3"
     },
     {
      "key": "air-entry",
      "label": "Air entry",
      "type": "select",
      "description": "Breath sounds auscultation",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = decreased",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = markedly decreased",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = decreased; 2 = markedly decreased",
+     "points_text": "0–2"
     },
     {
      "key": "cyanosis",
      "label": "Cyanosis",
-     "type": "select",
+     "type": "text",
      "description": "Cyanotic episodes",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "3",
-       "label": "3 = in distress",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = at rest",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = none; 3 = in distress; 4 = at rest",
+     "points_text": "0, 3, or 4"
     },
     {
      "key": "level-of-consciousness",
      "label": "Level of consciousness",
-     "type": "select",
+     "type": "text",
      "description": "Mental status",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = alert",
-       "points": 0.0
-      },
-      {
-       "value": "5",
-       "label": "5 = disoriented/decreased",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = alert; 5 = disoriented/decreased",
+     "points_text": "0 or 5"
     }
    ],
-   "score_max_computed": 17.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–2",
@@ -20510,8 +20553,9 @@
      "key": "seizure-at-or-before-presentation",
      "label": "Seizure at or before presentation",
      "type": "boolean",
-     "points": null,
-     "note": "Yes/No"
+     "description": "Seizure history",
+     "unit": "boolean",
+     "points": 1.0
     }
    ],
    "score_max_computed": null,
@@ -20557,17 +20601,26 @@
    "tier": 3,
    "purpose": "Identifies patients with soft tissue infection at risk for necrotizing fasciitis using routine laboratory tests.",
    "formula_human": "LRINEC = CRP(0/4) + WBC(0-2) + Hemoglobin(0-2) + Sodium(0/2) + Creatinine(0/2) + Glucose(0/1)",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "crp",
      "label": "CRP",
-     "type": "text",
+     "type": "select",
      "description": "C-reactive protein (mg/L)",
-     "unit": "mg/L",
-     "options_text": "<150 = 0; ≥150 = 4",
-     "points_text": "0 or 4"
+     "options": [
+      {
+       "value": "<150",
+       "label": "<150 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥150",
+       "label": "≥150 = 4",
+       "points": 4.0
+      }
+     ]
     },
     {
      "key": "wbc-count",
@@ -20576,9 +20629,19 @@
      "description": "White blood cell count (×10³/µL)",
      "options": [
       {
-       "value": "15",
+       "value": "<15",
+       "label": "<15 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "15–25",
        "label": "15–25 = 1",
-       "points": 15.0
+       "points": 1.0
+      },
+      {
+       "value": ">25",
+       "label": ">25 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -20589,41 +20652,78 @@
      "description": "Hemoglobin (g/dL)",
      "options": [
       {
-       "value": "11",
+       "value": ">13.5",
+       "label": ">13.5 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "11–13.5",
        "label": "11–13.5 = 1",
-       "points": 11.0
+       "points": 1.0
+      },
+      {
+       "value": "<11",
+       "label": "<11 = 2",
+       "points": 2.0
       }
      ]
     },
     {
      "key": "sodium",
      "label": "Sodium",
-     "type": "text",
+     "type": "select",
      "description": "Serum sodium (mmol/L)",
-     "unit": "mmol/L",
-     "options_text": "≥135 = 0; <135 = 2",
-     "points_text": "0 or 2"
+     "options": [
+      {
+       "value": "≥135",
+       "label": "≥135 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<135",
+       "label": "<135 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "creatinine",
      "label": "Creatinine",
-     "type": "text",
+     "type": "select",
      "description": "Serum creatinine (µmol/L)",
-     "unit": "µmol/L",
-     "options_text": "≤141 = 0; >141 = 2",
-     "points_text": "0 or 2"
+     "options": [
+      {
+       "value": "≤141",
+       "label": "≤141 = 0",
+       "points": 0.0
+      },
+      {
+       "value": ">141",
+       "label": ">141 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "glucose",
      "label": "Glucose",
-     "type": "text",
+     "type": "select",
      "description": "Serum glucose (mmol/L)",
-     "unit": "mmol/L",
-     "options_text": "≤10 = 0; >10 = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "≤10",
+       "label": "≤10 = 0",
+       "points": 0.0
+      },
+      {
+       "value": ">10",
+       "label": ">10 = 1",
+       "points": 1.0
+      }
+     ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 13.0,
    "bands": [
     {
      "range": "≤5",
@@ -20815,35 +20915,11 @@
     {
      "key": "verbal-response-modified-for-age",
      "label": "Verbal response (modified for age)",
-     "type": "select",
+     "type": "text",
      "description": "Age-appropriate verbal responses",
-     "options": [
-      {
-       "value": "5",
-       "label": "5 = Coos/babbles (age-appropriate)",
-       "points": 5.0
-      },
-      {
-       "value": "4",
-       "label": "4 = Irritable/cries",
-       "points": 4.0
-      },
-      {
-       "value": "3",
-       "label": "3 = Cries to pain",
-       "points": 3.0
-      },
-      {
-       "value": "2",
-       "label": "2 = Moans to pain",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = None",
-       "points": 1.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "5 = Coos/babbles (age-appropriate); 4 = Irritable/cries; 3 = Cries to pain; 2 = Moans to pain; 1 = None",
+     "points_text": "1–5"
     },
     {
      "key": "motor-response",
@@ -21174,8 +21250,8 @@
    "tier": 3,
    "purpose": "Predicts risk of symptomatic intracerebral hemorrhage after IV thrombolysis (tPA) for acute ischemic stroke.",
    "formula_human": "HAT = Glucose>200(1) + NIHSS(0–4) + CT_hypodensity(0–2)",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "pre-tpa-glucose-200-mg-dl",
@@ -21192,28 +21268,47 @@
      "description": "NIHSS severity",
      "options": [
       {
-       "value": "0",
+       "value": "0–15",
        "label": "0–15 = 0",
        "points": 0.0
       },
       {
-       "value": "16",
+       "value": "16–20",
        "label": "16–20 = 2",
-       "points": 16.0
+       "points": 2.0
+      },
+      {
+       "value": "≥21",
+       "label": "≥21 = 4",
+       "points": 4.0
       }
      ]
     },
     {
      "key": "hypodensity-on-ct",
      "label": "Hypodensity on CT",
-     "type": "text",
+     "type": "select",
      "description": "Early ischemic changes (hypoattenuation) on pre-tPA CT scan",
-     "unit": "categorical",
-     "options_text": "No = 0; <1/3 MCA territory = 1; ≥1/3 MCA territory = 2",
-     "points_text": "0, 1, or 2"
+     "options": [
+      {
+       "value": "No",
+       "label": "No = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<1/3 MCA territory",
+       "label": "<1/3 MCA territory = 1",
+       "points": 1.0
+      },
+      {
+       "value": "≥1/3 MCA territory",
+       "label": "≥1/3 MCA territory = 2",
+       "points": 2.0
+      }
+     ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 7.0,
    "bands": [
     {
      "range": "0",
@@ -21387,143 +21482,43 @@
    "tier": 3,
    "purpose": "Alternative to GCS for assessing level of consciousness in intubated patients; captures brainstem reflexes and respiratory patterns.",
    "formula_human": "FOUR = Eye(0–4) + Motor(0–4) + Brainstem(0–4) + Respiration(0–4)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "eye-response",
      "label": "Eye response",
      "type": "select",
      "description": "Eye opening/tracking",
-     "options": [
-      {
-       "value": "4",
-       "label": "4 = eyelids open, tracks or blinks to command",
-       "points": 4.0
-      },
-      {
-       "value": "3",
-       "label": "3 = eyelids open but no tracking",
-       "points": 3.0
-      },
-      {
-       "value": "2",
-       "label": "2 = eyelids closed but open to pain",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = eyelids closed to pain",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = eyelids remain closed with pain",
-       "points": 0.0
-      }
-     ]
+     "options_text": "4 = eyelids open, tracks or blinks to command; 3 = eyelids open but no tracking; 2 = eyelids closed but open to pain; 1 = eyelids closed to pain; 0 = eyelids remain closed with pain",
+     "points_text": "0–4"
     },
     {
      "key": "motor-response",
      "label": "Motor response",
      "type": "select",
      "description": "Motor function",
-     "options": [
-      {
-       "value": "4",
-       "label": "4 = thumbs-up/fist/peace sign",
-       "points": 4.0
-      },
-      {
-       "value": "3",
-       "label": "3 = localizes to pain",
-       "points": 3.0
-      },
-      {
-       "value": "2",
-       "label": "2 = flexion response to pain",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = extension to pain",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = no response to pain or generalized myoclonus",
-       "points": 0.0
-      }
-     ]
+     "options_text": "4 = thumbs-up/fist/peace sign; 3 = localizes to pain; 2 = flexion response to pain; 1 = extension to pain; 0 = no response to pain or generalized myoclonus",
+     "points_text": "0–4"
     },
     {
      "key": "brainstem-reflexes",
      "label": "Brainstem reflexes",
      "type": "select",
      "description": "Pupil, corneal, and cough reflexes",
-     "options": [
-      {
-       "value": "4",
-       "label": "4 = pupil and corneal reflexes present",
-       "points": 4.0
-      },
-      {
-       "value": "3",
-       "label": "3 = one pupil wide and fixed",
-       "points": 3.0
-      },
-      {
-       "value": "2",
-       "label": "2 = pupil OR corneal absent",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = pupil AND corneal absent",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = absent pupil, corneal, and cough reflex",
-       "points": 0.0
-      }
-     ]
+     "options_text": "4 = pupil and corneal reflexes present; 3 = one pupil wide and fixed; 2 = pupil OR corneal absent; 1 = pupil AND corneal absent; 0 = absent pupil, corneal, and cough reflex",
+     "points_text": "0–4"
     },
     {
      "key": "respiration",
      "label": "Respiration",
      "type": "select",
      "description": "Respiratory pattern or ventilator interaction",
-     "options": [
-      {
-       "value": "4",
-       "label": "4 = not intubated, regular breathing",
-       "points": 4.0
-      },
-      {
-       "value": "3",
-       "label": "3 = not intubated, Cheyne-Stokes",
-       "points": 3.0
-      },
-      {
-       "value": "2",
-       "label": "2 = not intubated, irregular breathing",
-       "points": 2.0
-      },
-      {
-       "value": "1",
-       "label": "1 = breathes above ventilator rate",
-       "points": 1.0
-      },
-      {
-       "value": "0",
-       "label": "0 = breathes at ventilator rate or apnea",
-       "points": 0.0
-      }
-     ]
+     "options_text": "4 = not intubated, regular breathing; 3 = not intubated, Cheyne-Stokes; 2 = not intubated, irregular breathing; 1 = breathes above ventilator rate; 0 = breathes at ventilator rate or apnea",
+     "points_text": "0–4"
     }
    ],
-   "score_max_computed": 16.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "16",
@@ -21574,101 +21569,56 @@
    "tier": 3,
    "purpose": "Patient-completed questionnaire assessing asthma control over the previous 4 weeks to guide treatment adjustments.",
    "formula_human": "ACT = Sum of all 5 items (each 1–5)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "asthma-symptom-interference-with-daily-activities",
      "label": "Asthma symptom interference with daily activities",
-     "type": "select",
+     "type": "text",
      "description": "How much did asthma interfere with daily activities? (1–5)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = all of the time",
-       "points": 1.0
-      },
-      {
-       "value": "5",
-       "label": "5 = not at all",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = all of the time; 5 = not at all",
+     "points_text": "1–5"
     },
     {
      "key": "shortness-of-breath-frequency",
      "label": "Shortness of breath frequency",
-     "type": "select",
+     "type": "text",
      "description": "How often had shortness of breath? (1–5)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = more than once a day",
-       "points": 1.0
-      },
-      {
-       "value": "5",
-       "label": "5 = not at all",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = more than once a day; 5 = not at all",
+     "points_text": "1–5"
     },
     {
      "key": "nighttime-symptoms",
      "label": "Nighttime symptoms",
-     "type": "select",
+     "type": "text",
      "description": "How often did asthma symptoms wake you at night or earlier than usual? (1–5)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = 4+ nights/week",
-       "points": 1.0
-      },
-      {
-       "value": "5",
-       "label": "5 = not at all",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = 4+ nights/week; 5 = not at all",
+     "points_text": "1–5"
     },
     {
      "key": "reliever-inhaler-use",
      "label": "Reliever inhaler use",
-     "type": "select",
+     "type": "text",
      "description": "How often used rescue inhaler? (1–5)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = 3+ times/day",
-       "points": 1.0
-      },
-      {
-       "value": "5",
-       "label": "5 = not at all",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = 3+ times/day; 5 = not at all",
+     "points_text": "1–5"
     },
     {
      "key": "overall-asthma-control-rating",
      "label": "Overall asthma control rating",
-     "type": "select",
+     "type": "text",
      "description": "How would you rate asthma control? (1–5)",
-     "options": [
-      {
-       "value": "1",
-       "label": "1 = not controlled at all",
-       "points": 1.0
-      },
-      {
-       "value": "5",
-       "label": "5 = completely controlled",
-       "points": 5.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "1 = not controlled at all; 5 = completely controlled",
+     "points_text": "1–5"
     }
    ],
-   "score_max_computed": 25.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "5–15",
@@ -21996,16 +21946,31 @@
    "tier": 3,
    "purpose": "Predicts in-hospital mortality in acute exacerbations of COPD using five readily available clinical variables.",
    "formula_human": "DECAF = Dyspnea(0-2) + Eosinopenia(1) + Consolidation(1) + Acidemia(1) + atrial_Fibrillation(1)",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "dyspnea-emrcd-5a-or-5b",
      "label": "Dyspnea (eMRCD 5a or 5b)",
      "type": "select",
      "description": "Extended MRC Dyspnea scale: 5a = dyspnea after washing/dressing; 5b = housebound due to breathlessness",
-     "options_text": "eMRCD 1–4=0; 5a=1; 5b=2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "eMRCD 1–4",
+       "label": "eMRCD 1–4=0",
+       "points": 0.0
+      },
+      {
+       "value": "5a",
+       "label": "5a=1",
+       "points": 1.0
+      },
+      {
+       "value": "5b",
+       "label": "5b=2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "eosinopenia-0-05-10-l",
@@ -22040,7 +22005,7 @@
      "points": 1.0
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 6.0,
    "bands": [
     {
      "range": "0–1",
@@ -22337,19 +22302,29 @@
      "description": "Breaths per minute",
      "options": [
       {
-       "value": "9",
+       "value": "≤8",
+       "label": "≤8 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "9–11",
        "label": "9–11 = 1",
-       "points": 9.0
+       "points": 1.0
       },
       {
-       "value": "12",
+       "value": "12–20",
        "label": "12–20 = 0",
-       "points": 12.0
+       "points": 0.0
       },
       {
-       "value": "21",
+       "value": "21–24",
        "label": "21–24 = 2",
-       "points": 21.0
+       "points": 2.0
+      },
+      {
+       "value": "≥25",
+       "label": "≥25 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -22360,14 +22335,24 @@
      "description": "SpO₂",
      "options": [
       {
-       "value": "92",
-       "label": "92–93 = 2",
-       "points": 92.0
+       "value": "≤91",
+       "label": "≤91 = 3",
+       "points": 3.0
       },
       {
-       "value": "94",
+       "value": "92–93",
+       "label": "92–93 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "94–95",
        "label": "94–95 = 1",
-       "points": 94.0
+       "points": 1.0
+      },
+      {
+       "value": "≥96",
+       "label": "≥96 = 0",
+       "points": 0.0
       }
      ]
     },
@@ -22385,19 +22370,29 @@
      "description": "Core temperature",
      "options": [
       {
-       "value": "35.1",
+       "value": "≤35",
+       "label": "≤35 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "35.1–36.0",
        "label": "35.1–36.0 = 1",
-       "points": 35.1
+       "points": 1.0
       },
       {
-       "value": "36.1",
+       "value": "36.1–38.0",
        "label": "36.1–38.0 = 0",
-       "points": 36.1
+       "points": 0.0
       },
       {
-       "value": "38.1",
+       "value": "38.1–39.0",
        "label": "38.1–39.0 = 1",
-       "points": 38.1
+       "points": 1.0
+      },
+      {
+       "value": "≥39.1",
+       "label": "≥39.1 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -22408,19 +22403,29 @@
      "description": "Systolic blood pressure",
      "options": [
       {
-       "value": "91",
+       "value": "≤90",
+       "label": "≤90 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "91–100",
        "label": "91–100 = 2",
-       "points": 91.0
+       "points": 2.0
       },
       {
-       "value": "101",
+       "value": "101–110",
        "label": "101–110 = 1",
-       "points": 101.0
+       "points": 1.0
       },
       {
-       "value": "111",
+       "value": "111–219",
        "label": "111–219 = 0",
-       "points": 111.0
+       "points": 0.0
+      },
+      {
+       "value": "≥220",
+       "label": "≥220 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -22431,35 +22436,54 @@
      "description": "Heart rate",
      "options": [
       {
-       "value": "41",
+       "value": "≤40",
+       "label": "≤40 = 3",
+       "points": 3.0
+      },
+      {
+       "value": "41–50",
        "label": "41–50 = 1",
-       "points": 41.0
+       "points": 1.0
       },
       {
-       "value": "51",
+       "value": "51–90",
        "label": "51–90 = 0",
-       "points": 51.0
+       "points": 0.0
       },
       {
-       "value": "91",
+       "value": "91–110",
        "label": "91–110 = 1",
-       "points": 91.0
+       "points": 1.0
       },
       {
-       "value": "111",
+       "value": "111–130",
        "label": "111–130 = 2",
-       "points": 111.0
+       "points": 2.0
+      },
+      {
+       "value": "≥131",
+       "label": "≥131 = 3",
+       "points": 3.0
       }
      ]
     },
     {
      "key": "consciousness",
      "label": "Consciousness",
-     "type": "text",
+     "type": "select",
      "description": "AVPU: Alert or not",
-     "unit": "categorical",
-     "options_text": "Alert = 0; CVPU (Confusion, Voice, Pain, Unresponsive) = 3",
-     "points_text": "0 or 3"
+     "options": [
+      {
+       "value": "Alert",
+       "label": "Alert = 0",
+       "points": 0.0
+      },
+      {
+       "value": "CVPU (Confusion, Voice, Pain, Unresponsive)",
+       "label": "CVPU (Confusion, Voice, Pain, Unresponsive) = 3",
+       "points": 3.0
+      }
+     ]
     }
    ],
    "score_max_computed": null,
@@ -22805,9 +22829,19 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "50",
+       "value": "<50",
+       "label": "<50 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "50–74",
        "label": "50–74 = 1",
-       "points": 50.0
+       "points": 1.0
+      },
+      {
+       "value": "≥75",
+       "label": "≥75 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -22818,14 +22852,24 @@
      "description": "APACHE II score",
      "options": [
       {
-       "value": "15",
-       "label": "15–19 = 1",
-       "points": 15.0
+       "value": "<15",
+       "label": "<15 = 0",
+       "points": 0.0
       },
       {
-       "value": "20",
+       "value": "15–19",
+       "label": "15–19 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "20–27",
        "label": "20–27 = 2",
-       "points": 20.0
+       "points": 2.0
+      },
+      {
+       "value": "≥28",
+       "label": "≥28 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -22836,14 +22880,24 @@
      "description": "SOFA score",
      "options": [
       {
-       "value": "6",
-       "label": "6–9 = 1",
-       "points": 6.0
+       "value": "<6",
+       "label": "<6 = 0",
+       "points": 0.0
       },
       {
-       "value": "10",
+       "value": "6–9",
+       "label": "6–9 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "10–12",
        "label": "10–12 = 2",
-       "points": 10.0
+       "points": 2.0
+      },
+      {
+       "value": "≥13",
+       "label": "≥13 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -22859,9 +22913,14 @@
        "points": 0.0
       },
       {
-       "value": "1",
+       "value": "1–2",
        "label": "1–2 = 1",
        "points": 1.0
+      },
+      {
+       "value": "≥3",
+       "label": "≥3 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -22870,8 +22929,18 @@
      "label": "Days from hospital admission to ICU",
      "type": "select",
      "description": "Length of stay before ICU admission",
-     "options_text": "<1 = 0; ≥1 = 1",
-     "points_text": "0–1"
+     "options": [
+      {
+       "value": "<1",
+       "label": "<1 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "≥1",
+       "label": "≥1 = 1",
+       "points": 1.0
+      }
+     ]
     },
     {
      "key": "il-6-optional-in-full-nutric-removed-in-mnutric",
@@ -22936,19 +23005,29 @@
      "description": "Oxygenation ratio",
      "options": [
       {
-       "value": "225",
+       "value": "≥300",
+       "label": "≥300 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "225–299",
        "label": "225–299 = 1",
-       "points": 225.0
+       "points": 1.0
       },
       {
-       "value": "150",
+       "value": "150–224",
        "label": "150–224 = 2",
-       "points": 150.0
+       "points": 2.0
       },
       {
-       "value": "75",
+       "value": "75–149",
        "label": "75–149 = 3",
-       "points": 75.0
+       "points": 3.0
+      },
+      {
+       "value": "<75",
+       "label": "<75 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -22959,18 +23038,28 @@
      "description": "Creatinine (mg/dL)",
      "options": [
       {
-       "value": "1.1",
+       "value": "<1.1",
+       "label": "<1.1 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "1.1–2.3",
        "label": "1.1–2.3 = 1",
-       "points": 1.1
+       "points": 1.0
       },
       {
-       "value": "2.3",
+       "value": "2.3–4.0",
        "label": "2.3–4.0 = 2",
-       "points": 2.3
+       "points": 2.0
       },
       {
-       "value": "4.0",
+       "value": "4.0–5.7",
        "label": "4.0–5.7 = 3",
+       "points": 3.0
+      },
+      {
+       "value": ">5.7",
+       "label": ">5.7 = 4",
        "points": 4.0
       }
      ]
@@ -22982,18 +23071,28 @@
      "description": "Total bilirubin (mg/dL)",
      "options": [
       {
-       "value": "1.1",
+       "value": "<1.1",
+       "label": "<1.1 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "1.1–2.3",
        "label": "1.1–2.3 = 1",
-       "points": 1.1
+       "points": 1.0
       },
       {
-       "value": "2.3",
+       "value": "2.3–4.0",
        "label": "2.3–4.0 = 2",
-       "points": 2.3
+       "points": 2.0
       },
       {
-       "value": "4.0",
+       "value": "4.0–5.7",
        "label": "4.0–5.7 = 3",
+       "points": 3.0
+      },
+      {
+       "value": ">5.7",
+       "label": ">5.7 = 4",
        "points": 4.0
       }
      ]
@@ -23005,19 +23104,29 @@
      "description": "PAR = HR × RAP / MAP",
      "options": [
       {
-       "value": "10.1",
+       "value": "<10",
+       "label": "<10 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "10.1–15",
        "label": "10.1–15 = 1",
-       "points": 10.1
+       "points": 1.0
       },
       {
-       "value": "15.1",
+       "value": "15.1–20",
        "label": "15.1–20 = 2",
-       "points": 15.1
+       "points": 2.0
       },
       {
-       "value": "20.1",
+       "value": "20.1–30",
        "label": "20.1–30 = 3",
-       "points": 20.1
+       "points": 3.0
+      },
+      {
+       "value": ">30",
+       "label": ">30 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -23028,19 +23137,29 @@
      "description": "Platelet count (×10³/µL)",
      "options": [
       {
-       "value": "120",
+       "value": "≥120",
+       "label": "≥120 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "120–80",
        "label": "120–80 = 1",
-       "points": 120.0
+       "points": 1.0
       },
       {
-       "value": "80",
+       "value": "80–51",
        "label": "80–51 = 2",
-       "points": 80.0
+       "points": 2.0
       },
       {
-       "value": "51",
+       "value": "51–20",
        "label": "51–20 = 3",
-       "points": 51.0
+       "points": 3.0
+      },
+      {
+       "value": "<20",
+       "label": "<20 = 4",
+       "points": 4.0
       }
      ]
     },
@@ -23053,27 +23172,32 @@
       {
        "value": "15",
        "label": "15 = 0",
-       "points": 15.0
+       "points": 0.0
       },
       {
-       "value": "13",
+       "value": "13–14",
        "label": "13–14 = 1",
-       "points": 13.0
+       "points": 1.0
       },
       {
-       "value": "10",
+       "value": "10–12",
        "label": "10–12 = 2",
-       "points": 10.0
+       "points": 2.0
       },
       {
-       "value": "7",
+       "value": "7–9",
        "label": "7–9 = 3",
-       "points": 7.0
+       "points": 3.0
+      },
+      {
+       "value": "≤6",
+       "label": "≤6 = 4",
+       "points": 4.0
       }
      ]
     }
    ],
-   "score_max_computed": 388.1,
+   "score_max_computed": 24.0,
    "bands": [
     {
      "range": "0",
@@ -23438,108 +23562,43 @@
    "tier": 3,
    "purpose": "Clinical scoring system for assessing acute asthma severity in children in the emergency department.",
    "formula_human": "PASS = RR(0–2) + Accessory_muscles(0–2) + Wheezing(0–3) + SpO2(0–2)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "respiratory-rate",
      "label": "Respiratory rate",
      "type": "select",
      "description": "Age-adjusted respiratory rate assessment",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal for age",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = moderately increased",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = markedly increased",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal for age; 1 = moderately increased; 2 = markedly increased",
+     "points_text": "0–2"
     },
     {
      "key": "accessory-muscle-use",
      "label": "Accessory muscle use",
      "type": "select",
      "description": "Use of accessory muscles of respiration",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = some",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = marked",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = none; 1 = some; 2 = marked",
+     "points_text": "0–2"
     },
     {
      "key": "wheezing",
      "label": "Wheezing",
      "type": "select",
      "description": "Auscultatory wheezing",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = end-expiratory",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = throughout expiration",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = inspiratory and expiratory or absent (silent chest)",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = none; 1 = end-expiratory; 2 = throughout expiration; 3 = inspiratory and expiratory or absent (silent chest)",
+     "points_text": "0–3"
     },
     {
      "key": "oxygen-saturation",
      "label": "Oxygen saturation",
      "type": "select",
      "description": "SpO2 on room air",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = ≥95%",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = 90–94%",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = <90%",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = ≥95%; 1 = 90–94%; 2 = <90%",
+     "points_text": "0–2"
     }
    ],
-   "score_max_computed": 9.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–3",
@@ -23586,8 +23645,8 @@
    "tier": 3,
    "purpose": "Validated acute asthma severity score for children in the ED, based on clinical examination without requiring auscultation.",
    "formula_human": "PRAM = Suprasternal_retraction(1) + Scalene(1) + Air_entry(0–2) + SpO2(0/1/3) + Wheezing(0/1/2)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "suprasternal-retractions",
@@ -23610,23 +23669,8 @@
      "label": "Air entry on auscultation",
      "type": "select",
      "description": "Degree of air entry",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = decreased",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = markedly decreased",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = decreased; 2 = markedly decreased",
+     "points_text": "0–2"
     },
     {
      "key": "oxygen-saturation-spo2",
@@ -23635,37 +23679,33 @@
      "description": "SpO2 on room air",
      "options": [
       {
-       "value": "92",
+       "value": "≥95%",
+       "label": "≥95% = 0",
+       "points": 0.0
+      },
+      {
+       "value": "92–94%",
        "label": "92–94% = 1",
-       "points": 92.0
+       "points": 1.0
+      },
+      {
+       "value": "<92%",
+       "label": "<92% = 3",
+       "points": 3.0
       }
      ]
     },
     {
      "key": "wheezing",
      "label": "Wheezing",
-     "type": "select",
+     "type": "text",
      "description": "Character of wheezing",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = expiratory only",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = inspiratory + expiratory or absent",
-       "points": 2.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "0 = none; 1 = expiratory only; 2 = inspiratory + expiratory or absent",
+     "points_text": "0, 1, or 2"
     }
    ],
-   "score_max_computed": 98.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–3",
@@ -24524,16 +24564,41 @@
    "tier": 3,
    "purpose": "Assesses severity of acute pancreatitis based on CT findings of pancreatic necrosis and peripancreatic fluid collections.",
    "formula_human": "CTSI = Inflammation(0–6) + Necrosis(0–6)\n\nModified CTSI (MCTSI):\n- Normal pancreas = 0\n- Intrinsic pancreatic abnormalities (with or without peripancreatic changes) = 2\n- Pancreatic/peripancreatic fluid collections or peripancreatic fat necrosis = 4\n- Necrosis: none = 0; <30% = 2; ≥30% = 4\nMCTSI = Inflammation(0–4) + Necrosis(0–4)\n\nExtrapancreatic complications (pleural effusion, ascites, vascular complications, GI tract involvement) = +2 in MCTSI",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "pancreatic-inflammation",
      "label": "Pancreatic inflammation",
      "type": "select",
      "description": "CT appearance of pancreatic parenchyma",
-     "options_text": "Normal = 0; Focal/diffuse enlargement = 2; Peripancreatic inflammation = 4; Single peripancreatic fluid collection = 4; Two or more fluid collections or retroperitoneal gas = 6",
-     "points_text": "0–6"
+     "options": [
+      {
+       "value": "Normal",
+       "label": "Normal = 0",
+       "points": 0.0
+      },
+      {
+       "value": "Focal/diffuse enlargement",
+       "label": "Focal/diffuse enlargement = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Peripancreatic inflammation",
+       "label": "Peripancreatic inflammation = 4",
+       "points": 4.0
+      },
+      {
+       "value": "Single peripancreatic fluid collection",
+       "label": "Single peripancreatic fluid collection = 4",
+       "points": 4.0
+      },
+      {
+       "value": "Two or more fluid collections or retroperitoneal gas",
+       "label": "Two or more fluid collections or retroperitoneal gas = 6",
+       "points": 6.0
+      }
+     ]
     },
     {
      "key": "necrosis",
@@ -24542,14 +24607,29 @@
      "description": "Percentage of pancreatic necrosis on contrast-enhanced CT",
      "options": [
       {
-       "value": "30",
+       "value": "None",
+       "label": "None = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<30%",
+       "label": "<30% = 2",
+       "points": 2.0
+      },
+      {
+       "value": "30–50%",
        "label": "30–50% = 4",
-       "points": 30.0
+       "points": 4.0
+      },
+      {
+       "value": ">50%",
+       "label": ">50% = 6",
+       "points": 6.0
       }
      ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 12.0,
    "bands": [
     {
      "range": "CTSI 0–3",
@@ -24899,19 +24979,24 @@
      "description": "Blood urea nitrogen (mg/dL)",
      "options": [
       {
-       "value": "6.5",
+       "value": "6.5–7.9",
        "label": "6.5–7.9 = 2",
-       "points": 6.5
+       "points": 2.0
       },
       {
-       "value": "8.0",
+       "value": "8.0–9.9",
        "label": "8.0–9.9 = 3",
-       "points": 8.0
+       "points": 3.0
       },
       {
-       "value": "10.0",
+       "value": "10.0–24.9",
        "label": "10.0–24.9 = 4",
-       "points": 10.0
+       "points": 4.0
+      },
+      {
+       "value": "≥25",
+       "label": "≥25 = 6",
+       "points": 6.0
       }
      ]
     },
@@ -24922,14 +25007,19 @@
      "description": "Hemoglobin for male patients (g/dL)",
      "options": [
       {
-       "value": "12.0",
+       "value": "12.0–12.9",
        "label": "12.0–12.9 = 1",
-       "points": 12.0
+       "points": 1.0
       },
       {
-       "value": "10.0",
+       "value": "10.0–11.9",
        "label": "10.0–11.9 = 3",
-       "points": 10.0
+       "points": 3.0
+      },
+      {
+       "value": "<10.0",
+       "label": "<10.0 = 6",
+       "points": 6.0
       }
      ]
     },
@@ -24940,9 +25030,14 @@
      "description": "Hemoglobin for female patients (g/dL)",
      "options": [
       {
-       "value": "10.0",
+       "value": "10.0–11.9",
        "label": "10.0–11.9 = 1",
-       "points": 10.0
+       "points": 1.0
+      },
+      {
+       "value": "<10.0",
+       "label": "<10.0 = 6",
+       "points": 6.0
       }
      ]
     },
@@ -24953,14 +25048,19 @@
      "description": "Systolic blood pressure (mmHg)",
      "options": [
       {
-       "value": "100",
+       "value": "100–109",
        "label": "100–109 = 1",
-       "points": 100.0
+       "points": 1.0
       },
       {
-       "value": "90",
+       "value": "90–99",
        "label": "90–99 = 2",
-       "points": 90.0
+       "points": 2.0
+      },
+      {
+       "value": "<90",
+       "label": "<90 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -25005,7 +25105,7 @@
      "points": 2.0
     }
    ],
-   "score_max_computed": 140.0,
+   "score_max_computed": 29.0,
    "bands": [
     {
      "range": "0",
@@ -25056,8 +25156,8 @@
    "tier": 3,
    "purpose": "Predicts mortality after upper GI bleeding using clinical and endoscopic findings. Requires endoscopy for complete scoring.",
    "formula_human": "Rockall = Age(0–2) + Shock(0–2) + Comorbidity(0–3) + Diagnosis(0–2) + Stigmata(0–2)\n\nPre-endoscopy score = Age + Shock + Comorbidity (range 0–7)\nFull score = all 5 components (range 0–11)",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "age",
@@ -25066,9 +25166,19 @@
      "description": "Age in years",
      "options": [
       {
-       "value": "60",
+       "value": "<60",
+       "label": "<60 = 0",
+       "points": 0.0
+      },
+      {
+       "value": "60–79",
        "label": "60–79 = 1",
-       "points": 60.0
+       "points": 1.0
+      },
+      {
+       "value": "≥80",
+       "label": "≥80 = 2",
+       "points": 2.0
       }
      ]
     },
@@ -25077,35 +25187,95 @@
      "label": "Shock",
      "type": "select",
      "description": "Hemodynamic status",
-     "options_text": "No shock = 0; HR>100, SBP>100 = 1; SBP<100 = 2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "No shock",
+       "label": "No shock = 0",
+       "points": 0.0
+      },
+      {
+       "value": "HR>100, SBP>100",
+       "label": "HR>100, SBP>100 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "SBP<100",
+       "label": "SBP<100 = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "comorbidity",
      "label": "Comorbidity",
      "type": "select",
      "description": "Significant comorbidities",
-     "options_text": "None = 0; CHF, IHD = 2; Renal failure, liver failure, disseminated malignancy = 3",
-     "points_text": "0–3"
+     "options": [
+      {
+       "value": "None",
+       "label": "None = 0",
+       "points": 0.0
+      },
+      {
+       "value": "CHF, IHD",
+       "label": "CHF, IHD = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Renal failure, liver failure, disseminated malignancy",
+       "label": "Renal failure, liver failure, disseminated malignancy = 3",
+       "points": 3.0
+      }
+     ]
     },
     {
      "key": "diagnosis-endoscopic",
      "label": "Diagnosis (endoscopic)",
      "type": "select",
      "description": "Endoscopic finding",
-     "options_text": "Mallory-Weiss = 0; No lesion/srce seen, erosive disease = 1; Upper GI malignancy = 2; All other = 0",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "Mallory-Weiss",
+       "label": "Mallory-Weiss = 0",
+       "points": 0.0
+      },
+      {
+       "value": "No lesion/srce seen, erosive disease",
+       "label": "No lesion/srce seen, erosive disease = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Upper GI malignancy",
+       "label": "Upper GI malignancy = 2",
+       "points": 2.0
+      },
+      {
+       "value": "All other",
+       "label": "All other = 0",
+       "points": 0.0
+      }
+     ]
     },
     {
      "key": "major-stigmata-of-recent-hemorrhage",
      "label": "Major stigmata of recent hemorrhage",
      "type": "select",
      "description": "Active bleeding, visible vessel, or adherent clot at endoscopy",
-     "options_text": "None/dark spot = 0; Blood in upper GI, adherent clot, visible vessel, spurting = 2",
-     "points_text": "0–2"
+     "options": [
+      {
+       "value": "None/dark spot",
+       "label": "None/dark spot = 0",
+       "points": 0.0
+      },
+      {
+       "value": "Blood in upper GI, adherent clot, visible vessel, spurting",
+       "label": "Blood in upper GI, adherent clot, visible vessel, spurting = 2",
+       "points": 2.0
+      }
+     ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 11.0,
    "bands": [
     {
      "range": "Pre-endoscopy 0",
@@ -25160,8 +25330,8 @@
    "tier": 3,
    "purpose": "Assesses severity of liver cirrhosis and predicts survival. Used for transplant eligibility and surgical risk stratification.",
    "formula_human": "CTP = Bilirubin(1–3) + Albumin(1–3) + INR(1–3) + Ascites(1–3) + Encephalopathy(1–3)\n\nNote: For primary biliary cholangitis and primary sclerosing cholangitis, bilirubin thresholds differ: <4 = 1; 4–10 = 2; >10 = 3.",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "bilirubin",
@@ -25170,9 +25340,19 @@
      "description": "Total serum bilirubin (mg/dL)",
      "options": [
       {
-       "value": "2",
+       "value": "<2",
+       "label": "<2 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "2–3",
        "label": "2–3 = 2",
        "points": 2.0
+      },
+      {
+       "value": ">3",
+       "label": ">3 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -25183,9 +25363,19 @@
      "description": "Serum albumin (g/dL)",
      "options": [
       {
-       "value": "2.8",
+       "value": ">3.5",
+       "label": ">3.5 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "2.8–3.5",
        "label": "2.8–3.5 = 2",
-       "points": 2.8
+       "points": 2.0
+      },
+      {
+       "value": "<2.8",
+       "label": "<2.8 = 3",
+       "points": 3.0
       }
      ]
     },
@@ -25196,32 +25386,70 @@
      "description": "International Normalized Ratio",
      "options": [
       {
-       "value": "1.7",
+       "value": "<1.7",
+       "label": "<1.7 = 1",
+       "points": 1.0
+      },
+      {
+       "value": "1.7–2.3",
        "label": "1.7–2.3 = 2",
-       "points": 1.7
+       "points": 2.0
+      },
+      {
+       "value": ">2.3",
+       "label": ">2.3 = 3",
+       "points": 3.0
       }
      ]
     },
     {
      "key": "ascites",
      "label": "Ascites",
-     "type": "text",
+     "type": "select",
      "description": "Ascites on clinical exam or imaging",
-     "unit": "categorical",
-     "options_text": "None = 1; Mild/controlled = 2; Moderate-severe = 3",
-     "points_text": "1–3"
+     "options": [
+      {
+       "value": "None",
+       "label": "None = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Mild/controlled",
+       "label": "Mild/controlled = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Moderate-severe",
+       "label": "Moderate-severe = 3",
+       "points": 3.0
+      }
+     ]
     },
     {
      "key": "encephalopathy",
      "label": "Encephalopathy",
-     "type": "text",
+     "type": "select",
      "description": "Hepatic encephalopathy grade",
-     "unit": "categorical",
-     "options_text": "None = 1; Grade 1–2 = 2; Grade 3–4 = 3",
-     "points_text": "1–3"
+     "options": [
+      {
+       "value": "None",
+       "label": "None = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Grade 1–2",
+       "label": "Grade 1–2 = 2",
+       "points": 2.0
+      },
+      {
+       "value": "Grade 3–4",
+       "label": "Grade 3–4 = 3",
+       "points": 3.0
+      }
+     ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 15.0,
    "bands": [
     {
      "range": "5–6 (Class A)",
@@ -25369,8 +25597,18 @@
      "description": "Maximum diameter of the AVM nidus",
      "options": [
       {
-       "value": "3",
+       "value": "<3 cm",
+       "label": "<3 cm = 1",
+       "points": 1.0
+      },
+      {
+       "value": "3–6 cm",
        "label": "3–6 cm = 2",
+       "points": 2.0
+      },
+      {
+       "value": ">6 cm",
+       "label": ">6 cm = 3",
        "points": 3.0
       }
      ]
@@ -25385,11 +25623,20 @@
     {
      "key": "venous-drainage-pattern",
      "label": "Venous drainage pattern",
-     "type": "text",
+     "type": "select",
      "description": "Pattern of venous drainage",
-     "unit": "categorical",
-     "options_text": "Superficial only = 0; Deep venous drainage (deep veins, Galen system, or internal cerebral veins) = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "Superficial only",
+       "label": "Superficial only = 0",
+       "points": 0.0
+      },
+      {
+       "value": "Deep venous drainage (deep veins, Galen system, or internal ",
+       "label": "Deep venous drainage (deep veins, Galen system, or internal cerebral veins) = 1",
+       "points": 1.0
+      }
+     ]
     }
    ],
    "score_max_computed": null,
@@ -25453,20 +25700,68 @@
     {
      "key": "pain-severity",
      "label": "Pain severity",
-     "type": "text",
+     "type": "select",
      "description": "How often headache pain is severe (never/ rarely/ sometimes/ very often/ always)",
-     "unit": "categorical",
-     "options_text": "Never = 6; Rarely = 8; Sometimes = 10; Very often = 11; Always = 13",
-     "points_text": "6, 8, 10, 11, or 13"
+     "options": [
+      {
+       "value": "Never",
+       "label": "Never = 6",
+       "points": 6.0
+      },
+      {
+       "value": "Rarely",
+       "label": "Rarely = 8",
+       "points": 8.0
+      },
+      {
+       "value": "Sometimes",
+       "label": "Sometimes = 10",
+       "points": 10.0
+      },
+      {
+       "value": "Very often",
+       "label": "Very often = 11",
+       "points": 11.0
+      },
+      {
+       "value": "Always",
+       "label": "Always = 13",
+       "points": 13.0
+      }
+     ]
     },
     {
      "key": "daily-activity-limitation",
      "label": "Daily activity limitation",
-     "type": "text",
+     "type": "select",
      "description": "How often headache limits daily activities",
-     "unit": "categorical",
-     "options_text": "Never = 6; Rarely = 8; Sometimes = 10; Very often = 11; Always = 13",
-     "points_text": "6, 8, 10, 11, or 13"
+     "options": [
+      {
+       "value": "Never",
+       "label": "Never = 6",
+       "points": 6.0
+      },
+      {
+       "value": "Rarely",
+       "label": "Rarely = 8",
+       "points": 8.0
+      },
+      {
+       "value": "Sometimes",
+       "label": "Sometimes = 10",
+       "points": 10.0
+      },
+      {
+       "value": "Very often",
+       "label": "Very often = 11",
+       "points": 11.0
+      },
+      {
+       "value": "Always",
+       "label": "Always = 13",
+       "points": 13.0
+      }
+     ]
     },
     {
      "key": "fatigue-weariness",
@@ -25671,15 +25966,11 @@
     {
      "key": "ambulation",
      "label": "Ambulation",
-     "type": "select",
+     "type": "text",
      "description": "Walking ability and distance",
-     "options": [
-      {
-       "value": "4.0",
-       "label": "4.0–9.5: primarily based on ambulation milestones (unilateral/bilateral assistive device, ",
-       "points": 4.0
-      }
-     ]
+     "unit": "categorical",
+     "options_text": "EDSS 0–3: based on functional systems; 4.0–9.5: primarily based on ambulation milestones (unilateral/bilateral assistive device, wheelchair, bed-bound)",
+     "points_text": "single EDSS step 0–9.5"
     }
    ],
    "score_max_computed": null,
@@ -25865,141 +26156,51 @@
    "tier": 3,
    "purpose": "Prehospital screening tool derived from NIHSS to detect large vessel occlusion strokes for direct transport to thrombectomy-capable centers.",
    "formula_human": "FAST-ED = Face(0–2) + Arm(0–4) + Speech(0–3) + Eye(0–2) + Denial(0–2)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "facial-palsy",
      "label": "Facial palsy",
      "type": "select",
      "description": "Facial droop (from NIHSS item 4)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = minor",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = partial/complete",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = minor; 2 = partial/complete",
+     "points_text": "0–2"
     },
     {
      "key": "arm-weakness",
      "label": "Arm weakness",
      "type": "select",
      "description": "Arm motor deficit (NIHSS item 5)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = drift",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = some effort",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = no effort",
-       "points": 3.0
-      },
-      {
-       "value": "4",
-       "label": "4 = no movement",
-       "points": 4.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = drift; 2 = some effort; 3 = no effort; 4 = no movement",
+     "points_text": "0–4"
     },
     {
      "key": "speech-changes",
      "label": "Speech changes",
      "type": "select",
      "description": "Speech disturbance (NIHSS item 9 combined)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild aphasia",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe aphasia",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = mute/global",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = mild aphasia; 2 = severe aphasia; 3 = mute/global",
+     "points_text": "0–3"
     },
     {
      "key": "eye-deviation",
      "label": "Eye deviation",
      "type": "select",
      "description": "Gaze deviation (NIHSS item 2)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = partial gaze palsy",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = forced deviation",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = partial gaze palsy; 2 = forced deviation",
+     "points_text": "0–2"
     },
     {
      "key": "denial-neglect",
      "label": "Denial/neglect",
      "type": "select",
      "description": "Visual extinction/inattention (NIHSS item 11)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = absent",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = partial",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = complete",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = absent; 1 = partial; 2 = complete",
+     "points_text": "0–2"
     }
    ],
-   "score_max_computed": 13.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–3",
@@ -26042,144 +26243,59 @@
    "tier": 3,
    "purpose": "Prehospital scale to detect large vessel occlusion (LVO) acute stroke for direct transport to comprehensive stroke centers.",
    "formula_human": "RACE = Face(0–2) + Arm(0–3) + Leg(0–3) + Head_eyes(0–1) + Aphasia_neglect(0–1) + LOC(0–1)",
-   "engine": "points-sum",
-   "status": "ready",
+   "engine": "reference",
+   "status": "reference",
    "inputs": [
     {
      "key": "facial-palsy",
      "label": "Facial palsy",
      "type": "select",
      "description": "Facial weakness",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = none",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = moderate-severe",
-       "points": 2.0
-      }
-     ]
+     "options_text": "0 = none; 1 = mild; 2 = moderate-severe",
+     "points_text": "0–2"
     },
     {
      "key": "arm-motor-function",
      "label": "Arm motor function",
      "type": "select",
      "description": "Arm strength (proximal)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild-moderate weakness",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe weakness (drift/fall)",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = no movement",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = mild-moderate weakness; 2 = severe weakness (drift/fall); 3 = no movement",
+     "points_text": "0–3"
     },
     {
      "key": "leg-motor-function",
      "label": "Leg motor function",
      "type": "select",
      "description": "Leg strength (proximal)",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = normal",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = mild-moderate weakness",
-       "points": 1.0
-      },
-      {
-       "value": "2",
-       "label": "2 = severe weakness",
-       "points": 2.0
-      },
-      {
-       "value": "3",
-       "label": "3 = no movement",
-       "points": 3.0
-      }
-     ]
+     "options_text": "0 = normal; 1 = mild-moderate weakness; 2 = severe weakness; 3 = no movement",
+     "points_text": "0–3"
     },
     {
      "key": "head-eye-deviation",
      "label": "Head/eye deviation",
      "type": "select",
      "description": "Gaze deviation or forced head/eye turning",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = absent",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = present",
-       "points": 1.0
-      }
-     ]
+     "options_text": "0 = absent; 1 = present",
+     "points_text": "0–1"
     },
     {
      "key": "aphasia-neglect",
      "label": "Aphasia/Neglect",
      "type": "select",
      "description": "Language impairment or spatial neglect",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = absent",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = present (only test one side depending on clinical suspicion)",
-       "points": 1.0
-      }
-     ]
+     "options_text": "0 = absent; 1 = present (only test one side depending on clinical suspicion)",
+     "points_text": "0–1"
     },
     {
      "key": "level-of-consciousness-commands",
      "label": "Level of consciousness (commands)",
      "type": "select",
      "description": "GCS motor response or ability to follow commands",
-     "options": [
-      {
-       "value": "0",
-       "label": "0 = obeys commands",
-       "points": 0.0
-      },
-      {
-       "value": "1",
-       "label": "1 = does not obey",
-       "points": 1.0
-      }
-     ]
+     "options_text": "0 = obeys commands; 1 = does not obey",
+     "points_text": "0–1"
     }
    ],
-   "score_max_computed": 11.0,
+   "score_max_computed": null,
    "bands": [
     {
      "range": "0–4",
@@ -26352,29 +26468,61 @@
     {
      "key": "sah-amount",
      "label": "SAH amount",
-     "type": "text",
+     "type": "select",
      "description": "Amount of subarachnoid blood on CT",
-     "unit": "categorical",
-     "options_text": "No SAH or minimal = 0; Thin (diffuse or vertical layers <1mm) = 1; Thick (localized clots or vertical layers ≥1mm) = 2",
-     "points_text": "0, 1, or 2"
+     "options": [
+      {
+       "value": "No SAH or minimal",
+       "label": "No SAH or minimal = 0",
+       "points": 0.0
+      },
+      {
+       "value": "Thin (diffuse or vertical layers <1mm)",
+       "label": "Thin (diffuse or vertical layers <1mm) = 1",
+       "points": 1.0
+      },
+      {
+       "value": "Thick (localized clots or vertical layers ≥1mm)",
+       "label": "Thick (localized clots or vertical layers ≥1mm) = 2",
+       "points": 2.0
+      }
+     ]
     },
     {
      "key": "intraventricular-hemorrhage",
      "label": "Intraventricular hemorrhage",
-     "type": "text",
+     "type": "select",
      "description": "Presence of IVH on CT",
-     "unit": "categorical",
-     "options_text": "No IVH = 0; IVH present = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "No IVH",
+       "label": "No IVH = 0",
+       "points": 0.0
+      },
+      {
+       "value": "IVH present",
+       "label": "IVH present = 1",
+       "points": 1.0
+      }
+     ]
     },
     {
      "key": "intracerebral-hemorrhage",
      "label": "Intracerebral hemorrhage",
-     "type": "text",
+     "type": "select",
      "description": "Presence of ICH on CT",
-     "unit": "categorical",
-     "options_text": "No ICH = 0; ICH present = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "No ICH",
+       "label": "No ICH = 0",
+       "points": 0.0
+      },
+      {
+       "value": "ICH present",
+       "label": "ICH present = 1",
+       "points": 1.0
+      }
+     ]
     },
     {
      "key": "hydrocephalus",
@@ -26653,29 +26801,47 @@
    "tier": 3,
    "purpose": "Simple inflammation-based prognostic score for cancer patients using CRP and albumin, independent of tumor type.",
    "formula_human": "Modified GPS (mGPS):\nScore 0: CRP ≤10 mg/L (regardless of albumin)\nScore 1: CRP >10 mg/L and albumin ≥35 g/L\nScore 2: CRP >10 mg/L and albumin <35 g/L\n\nNote: mGPS differs from original GPS in that low albumin alone (with normal CRP) = score 0.",
-   "engine": "reference",
-   "status": "reference",
+   "engine": "points-sum",
+   "status": "ready",
    "inputs": [
     {
      "key": "c-reactive-protein",
      "label": "C-reactive protein",
-     "type": "text",
+     "type": "select",
      "description": "Serum CRP (mg/L)",
-     "unit": "mg/L",
-     "options_text": "≤10 mg/L = 0; >10 mg/L = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "≤10 mg/L",
+       "label": "≤10 mg/L = 0",
+       "points": 0.0
+      },
+      {
+       "value": ">10 mg/L",
+       "label": ">10 mg/L = 1",
+       "points": 1.0
+      }
+     ]
     },
     {
      "key": "albumin",
      "label": "Albumin",
-     "type": "text",
+     "type": "select",
      "description": "Serum albumin (g/L)",
-     "unit": "g/L",
-     "options_text": "≥35 g/L = 0; <35 g/L = 1",
-     "points_text": "0 or 1"
+     "options": [
+      {
+       "value": "≥35 g/L",
+       "label": "≥35 g/L = 0",
+       "points": 0.0
+      },
+      {
+       "value": "<35 g/L",
+       "label": "<35 g/L = 1",
+       "points": 1.0
+      }
+     ]
     }
    ],
-   "score_max_computed": null,
+   "score_max_computed": 2.0,
    "bands": [
     {
      "range": "0",
@@ -26904,33 +27070,20 @@
     {
      "key": "serum-bicarbonate",
      "label": "Serum bicarbonate",
-     "type": "select",
+     "type": "text",
      "description": "Serum HCO₃⁻ (mEq/L)",
-     "options": [
-      {
-       "value": "10",
-       "label": "10–17.9 = moderate",
-       "points": 10.0
-      }
-     ]
+     "unit": "mEq/L",
+     "options_text": "≥18 = mild; 10–17.9 = moderate; <10 = severe",
+     "points_text": "classifies severity"
     },
     {
      "key": "arterial-ph",
      "label": "Arterial pH",
-     "type": "select",
+     "type": "text",
      "description": "Arterial or venous pH",
-     "options": [
-      {
-       "value": "7.25",
-       "label": "7.25–7.30 = mild",
-       "points": 7.25
-      },
-      {
-       "value": "7.00",
-       "label": "7.00–7.24 = moderate",
-       "points": 7.0
-      }
-     ]
+     "unit": "pH units",
+     "options_text": "7.25–7.30 = mild; 7.00–7.24 = moderate; <7.00 = severe",
+     "points_text": "classifies severity"
     },
     {
      "key": "mental-status",

@@ -11,10 +11,13 @@ export const REST4SPEC = [
       yn('dm','Diabetes',1)],
     bands: [{ range:'0-3',label:'Low',meaning:'2-day stroke ~1%.'},{ range:'4-5',label:'Moderate',meaning:'~4%.'},{ range:'6-7',label:'High',meaning:'~8%.'}] },
   { id: 'ipssr', name: 'IPSS-R', category: 'Oncology', tier: 2,
-    purpose: 'MDS prognosis (App B Row 75; max 9).', formula: 'Cyto(0-4)+Blasts(0-4)+Hb(0/1/1.5)+PLT(0/0.5/1)+ANC(0/0.5); 0-9',
+    // App B Row 75: cyto 0-4 + blasts 0-3 + Hb 0-1.5 + PLT 0-1 + ANC 0-0.5 = 0-10.
+    // Row 75's printed "0-9" conflicts with its own '>20% = 4' blast row; the
+    // golden vector (blasts 11-20% = 3) constructs to 10. Pin behavior + flag.
+    purpose: 'MDS prognosis (App B Row 75; doc 0-9, constructed 0-10).', formula: 'Cyto(0-4)+Blasts(0-3)+Hb(0/1/1.5)+PLT(0/0.5/1)+ANC(0/0.5); constructed 0-10',
     engine: 'points-sum', citation: 'App B Row 75',
     inputs: [sel('cyto','Cytogenetics',[['vg','Very good',0],['g','Good',1],['i','Intermediate',2],['p','Poor',3],['vp','Very poor',4]]),
-      sel('blast','Marrow blasts',[['a','<=2%',0],['b','>2-<5%',1],['c','5-10%',2],['d','11-20%',3],['e','>20%',4]]),
+      sel('blast','Marrow blasts',[['a','<=2%',0],['b','>2-<5%',1],['c','5-10%',2],['d','>10%',3]]),
       sel('hb','Hemoglobin',[['a','>=10',0],['b','8-<10',1],['c','<8',1.5]]),
       sel('plt','Platelets',[['a','>=100',0],['b','50-<100',0.5],['c','<50',1]]),
       sel('anc','ANC',[['a','>=0.8',0],['b','<0.8',0.5]])],

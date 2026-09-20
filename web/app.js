@@ -1,23 +1,54 @@
 import { ALLSPECS, EXTERNAL, computeScore } from '../packages/engine/index.js';
 import { CONVERTERS, convert } from '../packages/engine/golden-part1.js';
-const READY = new Map(ALLSPECS.map(s => [s.name.toLowerCase(), s]));
+// Hand-verified spec id -> registry entry id (1:1 coverage for all 30 specs).
+const SPEC_REG = {
+  'anion-gap': 'MSC-0002', 'corrected-calcium': 'MSC-0004', 'osmolality': 'MSC-0137',
+  'meld': 'MSC-0047', 'meld-na': 'MSC-0048', 'child-pugh': 'MSC-0043',
+  'qtc': 'MSC-0024', 'cha2ds2-vasc': 'MSC-0015', 'atria': 'MSC-0139',
+  'hatch': 'MSC-0274', 'wells-dvt': 'MSC-0134', 'padua': 'MSC-0133',
+  'improve': 'MSC-0272', 'pesi': 'MSC-E107', 'spesi': 'MSC-0252',
+  'geneva': 'MSC-0115', 'perc': 'MSC-0113', 'four-at': 'MSC-0152',
+  'feverpain': 'MSC-0163', 'smart-cop': 'MSC-0251', 'ariscat': 'MSC-0257',
+  'mpi': 'MSC-0259', 'goldman': 'MSC-0295', 'detsky': 'MSC-0295',
+  'ripasa': 'MSC-0165', 'lods': 'MSC-0279', 'abcd2': 'MSC-0186',
+  'ipssr': 'MSC-0075', 'mmse': 'MSC-0095', 'moca': 'MSC-0096' };
+// Shared catalog row hosts two specs (PESI/sPESI share MSC-E107/PESI row 252
+// family; Goldman/Detsky share MSC-0295) - both render from the same card.
 const app = document.querySelector('#app');
 const state = { screen: 'home', query: '', tools: [],
-  saved: JSON.parse(localStorage.getItem('clinicalc-web-saved') || '[]') };
+  saved: (() => { try { const v = JSON.parse(localStorage.getItem('clinicalc-web-saved') || '[]');
+    return Array.isArray(v) ? v : []; } catch { return []; } })() };
 async function load() {
   try {
     const d = await (await fetch('../data/registry.json')).json();
-    state.tools = d.entries.map(e => ({ name: e.name, category: e.category || 'Clinical tools',
-      summary: e.purpose || e.formula_human || 'Clinical scoring system',
-      ready: READY.has(String(e.name || '').toLowerCase()), spec: READY.get(String(e.name || '').toLowerCase()) }));
+    const byId = Object.fromEntries(d.entries.map(e => [e.id, e]));
+    const seen = new Set();
+    state.tools = [];
+    // One card per hand-verified spec, keyed by registry id.
+    for (const s of ALLSPECS) {
+      const rid = SPEC_REG[s.id];
+      const e = byId[rid];
+      seen.add(rid + '|' + s.id);
+      state.tools.push({ name: s.name, regId: rid, category: e?.category || s.category,
+        summary: s.purpose, ready: s.engine !== 'reference', spec: s });
+    }
+    // Every other registry entry renders as a reference card.
+    for (const e of d.entries)
+      if (!Object.values(SPEC_REG).includes(e.id))
+        state.tools.push({ name: e.name, regId: e.id,
+          category: e.category || 'Clinical tools',
+          summary: e.purpose || e.formula_human || 'Clinical scoring system',
+          ready: false, spec: null });
   } catch (e) {
-    state.tools = ALLSPECS.map(s => ({ name: s.name, category: s.category, summary: s.purpose, ready: true, spec: s }));
+    state.tools = ALLSPECS.map(s => ({ name: s.name, regId: 'spec:' + s.id,
+      category: s.category, summary: s.purpose,
+      ready: s.engine !== 'reference', spec: s }));
   }
   for (const x of EXTERNAL) state.tools.push({ name: x.name, category: x.category, summary: x.note, ready: false, external: x });
   render();
 }
 function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function card(t) { return `<article class="tool" data-name="${esc(t.name)}"><div class="tool-icon">${t.ready ? 'OK' : 'i'}</div><h3>${esc(t.name)}</h3><p>${esc(t.summary)}</p><div class="tool-foot"><span>${esc(t.category)}</span><span class="tag ${t.ready ? '' : 'reference'}">${t.ready ? 'Calculator' : 'Reference'}</span></div></article>`; }
+function card(t) { return `<article class="tool" data-name="${esc(t.name)}" tabindex="0" role="button" aria-label="${esc(t.name)}${t.ready ? ', calculator' : ', reference'}"><div class="tool-icon">${t.ready ? 'OK' : 'i'}</div><h3>${esc(t.name)}</h3><p>${esc(t.summary)}</p><div class="tool-foot"><span>${esc(t.category)}</span><span class="tag ${t.ready ? '' : 'reference'}">${t.ready ? 'Calculator' : 'Reference'}</span></div></article>`; }
 function home() {
   const list = state.tools.filter(t => t.ready).slice(0, 8);
   return `<section class="hero"><div><div class="eyebrow">Clinical decision support</div><h1>Clarity when the clinical moment is moving fast.</h1><p>A calm, traceable home for bedside scores, risk tools, and essential calculations.</p></div><label class="search"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span><input id="search" placeholder="Search ${state.tools.length || '300+'} tools" value="${esc(state.query)}"></label></section><section class="bento"><article class="main"><div class="meta">QUICK CALC</div><h2>Start with a score</h2><p>Search the catalog or open a verified calculator.</p><div class="orb"></div></article><article class="peach"><div class="meta">CATALOG</div><h2>${state.tools.length || '300+'} tools indexed</h2><p>Verified calculators plus reference cards.</p></article><article class="gold"><div class="meta">SAFETY</div><h2>Traceable by design</h2><p>Formula, citation, and reference status stay visible.</p></article></section><div class="section-head"><h2>Bedside essentials</h2><a data-screen="browse">Browse all</a></div><section class="grid">${list.map(card).join('')}</section>`;
@@ -59,14 +90,20 @@ function readVals(s) {
 }
 function fmt(r) {
   if (r == null || Number.isNaN(r)) return '-';
+  if (typeof r === 'string') return r;
   if (typeof r === 'object') return Object.entries(r).map(([k, val]) => `${k} ${Math.round(val)}`).join(' | ');
   return Math.round(r * 100) / 100;
 }
 function bind() {
   document.querySelectorAll('[data-screen]').forEach(x => x.onclick = () => { state.screen = x.dataset.screen; render(); });
   const input = document.querySelector('#search');
-  if (input) input.oninput = e => { state.query = e.target.value; state.screen = 'browse'; render(); };
-  document.querySelectorAll('.tool').forEach(x => x.onclick = () => { state.screen = x.dataset.name; render(); });
+  if (input) input.oninput = e => { state.query = e.target.value; state.screen = 'browse';
+    render(true);
+    const n = document.querySelector('#search');
+    if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } };
+  const open = (x) => { state.screen = x.dataset.name; render(); };
+  document.querySelectorAll('.tool').forEach(x => { x.onclick = () => open(x);
+    x.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(x); } }; });
   const sv = document.querySelector('#save');
   if (sv) sv.onclick = () => { const n = state.screen; state.saved = state.saved.includes(n) ? state.saved.filter(x => x !== n) : [...state.saved, n]; localStorage.setItem('clinicalc-web-saved', JSON.stringify(state.saved)); render(); };
   const t = state.tools.find(x => x.name === state.screen);
@@ -75,7 +112,9 @@ function bind() {
     document.querySelectorAll('[data-key]').forEach(el => { el.oninput = upd; el.onchange = upd; });
     upd();
     const cv = document.querySelector('#conv-v'), cu = document.querySelector('#conv-u');
-    if (cv) { const c = () => { const s = CONVERTERS[Number(cu.value)]; document.querySelector('#conv-r').textContent = fmt(convert(Number(cv.value), s)) + ' ' + s.to; }; cv.oninput = c; cu.onchange = c; }
+    if (cv) { const c = () => { const s = CONVERTERS[Number(cu.value)];
+        document.querySelector('#conv-r').textContent = cv.value === '' ? '-' : fmt(convert(Number(cv.value), s)) + ' ' + s.to; };
+      cv.oninput = c; cu.onchange = c; }
   }
 }
 document.querySelector('#theme').onclick = () => document.body.classList.toggle('dark');
