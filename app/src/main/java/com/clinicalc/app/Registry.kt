@@ -18,15 +18,16 @@ data class RegistryTool(
 object RegistryLoader {
     fun load(context: Context): List<RegistryTool> {
         val markdown = runCatching { context.assets.open("catalog.md").bufferedReader().use { it.readText() } }.getOrDefault("")
-        val categoryRegex = Regex("^###+\\s+(.+)$", RegexOption.MULTILINE)
-        val category = categoryRegex.findAll(markdown).map { it.groupValues[1].trim() }.toList().firstOrNull() ?: "Medical scoring"
-        val tools = Regex("^\\*\\*([^*]+)\\*\\*\\s*[—-]?\\s*(.*)$", RegexOption.MULTILINE)
-            .findAll(markdown).mapIndexed { index, match ->
-                val full = match.groupValues[1].trim()
-                val parts = full.split(" — ", limit = 2)
-                val name = parts[0].trim()
-                RegistryTool("MSC-%04d".format(index + 1), name, category, parts.getOrNull(1) ?: "Clinical scoring system", null)
-            }.distinctBy { it.name.lowercase() }.toList()
+        val headingRegex = Regex("^#{2,4}\\s+(.+)$", RegexOption.MULTILINE)
+        val entryRegex = Regex("^\\*\\*([^*]+)\\*\\*\\s*[—-]?\\s*(.*)$", RegexOption.MULTILINE)
+        val headings = headingRegex.findAll(markdown).toList()
+        val tools = entryRegex.findAll(markdown).mapIndexed { index, match ->
+            val heading = headings.lastOrNull { it.range.first < match.range.first }?.groupValues?.get(1)?.trim()
+                ?: "Medical scoring"
+            val name = match.groupValues[1].trim()
+            val purpose = match.groupValues[2].trim().ifBlank { "Clinical scoring system" }
+            RegistryTool("MSC-%04d".format(index + 1), name, heading, purpose, null)
+        }.distinctBy { it.name.lowercase() }.toList()
         return if (tools.isEmpty()) listOf(RegistryTool("MSC-0000", "Catalog unavailable", "System", "The bundled catalog could not be read", null, "blocked")) else tools
     }
 }
