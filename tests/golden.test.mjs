@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { sumPoints, CONVERTERS, convert, convertBack } from '../packages/engine/golden-part1.js';
 import { BEDSIDESPEC } from '../packages/engine/spec-bedside.js';
 import { CARDIOSPEC } from '../packages/engine/spec-cardio.js';
@@ -88,3 +89,10 @@ test('points-sum min/max documented', () => {
     assert.ok(vals.every(v => v.length > 0), s.id);
   }
 });
+test('web: reference-only LODS renders no live result', () => {
+  // web/app.js must gate both the calculator body and the score-update
+  // binding on t.ready, so LODS (engine: reference) never shows output.
+  const src = fs.readFileSync(new URL('../web/app.js', import.meta.url), 'utf8');
+  assert.match(src, /\(t\.spec && t\.ready\)/);
+  assert.match(src, /t && t\.spec && t\.ready/);
+  assert.equal(byId['lods'].engine, 'reference'); });
